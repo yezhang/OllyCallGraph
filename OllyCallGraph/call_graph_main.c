@@ -1,5 +1,6 @@
 #define STRICT                         // Avoids some type mismatches
 #include <windows.h>
+
 #include <stdio.h>
 #include <Plugin.h>
 #include "resource.h"
@@ -43,7 +44,7 @@ BOOL APIENTRY DllMain(	HMODULE hModule,
 
 
 extc int _export cdecl ODBG_Plugindata(char shortname[32]) {
-	strcpy(shortname, g_szPluginName);
+	strcpy_s(shortname, 32, g_szPluginName);
 	return PLUGIN_VERSION;
 }
 
@@ -76,7 +77,7 @@ extc int _export cdecl ODBG_Pluginmenu(int origin, char data[4096], void *item) 
 	if (origin != PM_MAIN)
 		return 0;                          // No pop-up menus in OllyDbg's windows
 
-	strcpy(data, "0 &Start, 1 &Stop|2 &About");
+	strcpy_s(data, 4096,  "0 &Start, 1 &Stop|2 &About");
 	return 1;
 };
 
@@ -139,8 +140,11 @@ extc int _export cdecl ODBG_Pluginclose(void) {
 // 窗口插件主窗体
 static HWND CreateFCTWindow(){	
 	
+	wchar_t wchTitle[256]; // pick a sensible maximum
+	MultiByteToWideChar(CP_ACP, 0, g_fctTitle, -1, wchTitle, 32);
+
 	//DWORD dwStyle = WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
-	HWND hWnd = CreateWindow(g_fctClassName, g_fctTitle, WS_OVERLAPPEDWINDOW,
+	HWND hWnd = CreateWindow(g_fctClassName, wchTitle, WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, 
 		hwmain, NULL, hinst, NULL);
 

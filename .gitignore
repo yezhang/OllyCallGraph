@@ -1,6 +1,8 @@
 # Visual Studio 2013 files
 **/Debug/
+**/Release/
 Debug/
+Release/
 .vs/
 ipch/
 *.sdf
