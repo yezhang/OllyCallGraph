@@ -3,8 +3,9 @@
 //
 
 #pragma once
+#include "WatchWnd.h"
 
-class CMainFrame : public CMDIFrameWnd
+class CMainFrame : public CMDIFrameWndEx
 {
 	DECLARE_DYNAMIC(CMainFrame)
 public:
@@ -30,13 +31,16 @@ public:
 
 protected:  // 控件条嵌入成员
 	CStatusBar        m_wndStatusBar;
+	CWatchWnd		  m_wndWatch;
 
 // 生成的消息映射函数
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	
+	afx_msg void OnWindowManager();
+	afx_msg void OnViewCustomize();
 	DECLARE_MESSAGE_MAP()
 
+	BOOL CreateDockingWindows();
 };
 
 

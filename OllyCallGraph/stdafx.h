@@ -30,7 +30,7 @@
 
 #include <afxcontrolbars.h>     // 功能区和控件条的 MFC 支持
 
-#include <Plugin.h> //包含插件的头文件
+#include <Plugin.h> //包含 OllyDbg v1.10 插件的头文件
 
 
 

@@ -27,9 +27,6 @@
     <ClCompile Include="ui\ChildFrm.cpp">
       <Filter>源文件\ui</Filter>
     </ClCompile>
-    <ClCompile Include="ui\ChildView.cpp">
-      <Filter>源文件\ui</Filter>
-    </ClCompile>
     <ClCompile Include="ui\MainFrm.cpp">
       <Filter>源文件\ui</Filter>
     </ClCompile>
@@ -39,11 +36,17 @@
     <ClCompile Include="ui\PluginApp.cpp">
       <Filter>源文件\ui</Filter>
     </ClCompile>
+    <ClCompile Include="ui\WatchWnd.cpp">
+      <Filter>源文件\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\PluginAppDoc.cpp">
+      <Filter>源文件\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\PluginAppView.cpp">
+      <Filter>源文件\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -53,13 +56,22 @@
     <ClInclude Include="ui\ChildFrm.h">
       <Filter>头文件\ui</Filter>
     </ClInclude>
-    <ClInclude Include="ui\ChildView.h">
-      <Filter>头文件\ui</Filter>
-    </ClInclude>
     <ClInclude Include="ui\MainFrm.h">
       <Filter>头文件\ui</Filter>
     </ClInclude>
     <ClInclude Include="ui\PluginApp.h">
+      <Filter>头文件\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\WatchWnd.h">
+      <Filter>头文件\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\PluginAppDoc.h">
+      <Filter>头文件\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\PluginAppView.h">
       <Filter>头文件\ui</Filter>
     </ClInclude>
   </ItemGroup>
@@ -73,6 +85,9 @@
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="res\MFCApplication1.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\icon1.ico">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

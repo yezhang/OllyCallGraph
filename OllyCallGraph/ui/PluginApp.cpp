@@ -9,21 +9,21 @@
 #include "MainFrm.h"
 
 #include "ChildFrm.h"
+#include "PluginAppDoc.h"
+#include "PluginAppView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 
-// CMFCApplication1App
-
-BEGIN_MESSAGE_MAP(PluginApp, CWinApp)
+BEGIN_MESSAGE_MAP(PluginApp, CWinAppEx)
 	ON_COMMAND(ID_APP_ABOUT, &PluginApp::OnAppAbout)
-	ON_COMMAND(ID_FILE_NEW, &PluginApp::OnFileNew)
+	// 基于文件的标准文档命令
+	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
+	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
 END_MESSAGE_MAP()
 
-
-// CMFCApplication1App 构造
 
 PluginApp::PluginApp()
 {
@@ -59,8 +59,27 @@ BOOL PluginApp::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
+	InitContextMenuManager();
 
-	//OpenWindow();
+	InitKeyboardManager();
+
+	InitTooltipManager();
+	CMFCToolTipInfo ttParams;
+	ttParams.m_bVislManagerTheme = TRUE;
+
+	pluginApp.GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL,
+		RUNTIME_CLASS(CMFCToolTipCtrl), &ttParams);
+
+	// 注册应用程序的文档模板。  文档模板
+	// 将用作文档、框架窗口和视图之间的连接
+	CMultiDocTemplate* pDocTemplate;
+	pDocTemplate = new CMultiDocTemplate(IDR_PluginAppTYPE,
+		RUNTIME_CLASS(CPluginAppDoc),
+		RUNTIME_CLASS(CChildFrame), // 自定义 MDI 子框架
+		RUNTIME_CLASS(CPluginAppView));
+	if (!pDocTemplate)
+		return FALSE;
+	AddDocTemplate(pDocTemplate);
 
 	return TRUE;
 }
@@ -73,7 +92,7 @@ int PluginApp::ExitInstance()
 	if (m_hMDIAccel != NULL)
 		FreeResource(m_hMDIAccel);
 
-	return CWinApp::ExitInstance();
+	return CWinAppEx::ExitInstance();
 }
 
 BOOL PluginApp::OpenWindow()
@@ -99,6 +118,8 @@ BOOL PluginApp::OpenWindow()
 	pFrame->ShowWindow(m_nCmdShow);
 
 	pFrame->UpdateWindow();
+
+	return TRUE;
 }
 
 // CMFCApplication1App 消息处理程序

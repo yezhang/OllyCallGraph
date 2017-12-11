@@ -11,9 +11,6 @@ static HINSTANCE hinst;				//Plugin DLL instance
 static HWND      hwmain;            // Handle of main OllyDbg window
 static HWND      hwcmd;             // Handle of function call trace window
 
-static TCHAR g_fctClassName[32] = L"FCTWindow";
-static TCHAR g_fctTitle[32] = L"FCT Window"; //Window Title
-
 static char g_szPluginName[] = "Function Call Trace";
 
 static HWND CreateFCTWindow();
@@ -21,34 +18,7 @@ BOOL DestroyFCTWindow();
 
 
 // 唯一的一个 PluginApp 对象
-PluginApp theApp;
-
-
-// DLL 入口函数。
-//
-// 入口函数编写错误将不能正确获得 dll 实例。
-// 使用官方介绍的 DllEntryPoint 函数无法获得dll实例。
-// 
-//extc BOOL APIENTRY DllMain(	HMODULE hModule,
-//						DWORD  ul_reason_for_call,
-//						LPVOID lpReserved
-//						)
-//{
-//	switch (ul_reason_for_call)
-//	{
-//	case DLL_PROCESS_ATTACH:
-//		hinst = hModule;
-//		theApp.InitInstance();
-//
-//		break;
-//	case DLL_THREAD_ATTACH:
-//	case DLL_THREAD_DETACH:
-//	case DLL_PROCESS_DETACH:
-//		theApp.ExitInstance();
-//		break;
-//	}
-//	return TRUE;
-//}
+PluginApp pluginApp;
 
 
 extc int _export cdecl ODBG_Plugindata(char shortname[32]) {
@@ -63,14 +33,6 @@ extc int _export cdecl ODBG_Plugininit(int ollydbgversion, HWND hw, ulong * feat
 	}
 
 	hwmain = hw;
-
-	////代码初始化工作
-	//int nRetCode;
-	//nRetCode = FCTRegisterClass(g_fctClassName, NULL, hinst, FCTWndProc);
-	//if (nRetCode < 0) {
-	//	return -1;
-	//}
-
 
 	Addtolist(0, 0, "FCT Plugin v0.1");
 	Addtolist(0, -1, "Copyright (C) 2017 yezhang989");
@@ -147,18 +109,13 @@ extc int _export cdecl ODBG_Pluginclose(void) {
 
 // 窗口插件主窗体
 static HWND CreateFCTWindow(){	
-	theApp.m_nCmdShow = SW_SHOW;
-	theApp.OpenWindow();
+	pluginApp.m_nCmdShow = SW_SHOW;
+	pluginApp.OpenWindow();
 
-	CWnd* hwnd = theApp.GetMainWnd();
-	
-	
+	CWnd* hwnd = pluginApp.GetMainWnd();
 	
 	return hwnd->GetSafeHwnd();;
 }
-
-
-
 
 
 

@@ -15,7 +15,7 @@
 // 有关此类的实现，请参阅 MFCApplication1.cpp
 //
 
-class PluginApp : public CWinApp
+class PluginApp : public CWinAppEx
 {
 public:
 	PluginApp();
@@ -38,4 +38,4 @@ public:
 	DECLARE_MESSAGE_MAP()
 };
 
-extern PluginApp theApp;
+extern PluginApp pluginApp;

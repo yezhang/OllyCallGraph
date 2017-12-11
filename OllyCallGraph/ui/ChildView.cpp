@@ -3,7 +3,7 @@
 //
 
 #include "../stdafx.h"
-#include "MFCApplication1.h"
+#include "PluginApp.h"
 #include "ChildView.h"
 
 #ifdef _DEBUG

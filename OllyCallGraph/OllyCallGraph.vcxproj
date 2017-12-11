@@ -69,6 +69,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>D:\code\OllyDBG_pdk\plug110;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/J %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -83,27 +84,37 @@
     <ClCompile Include="call_graph_main.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ui\ChildFrm.cpp" />
-    <ClCompile Include="ui\ChildView.cpp" />
     <ClCompile Include="ui\MainFrm.cpp" />
     <ClCompile Include="ui\PluginApp.cpp" />
+    <ClCompile Include="ui\PluginAppDoc.cpp" />
+    <ClCompile Include="ui\PluginAppView.cpp" />
+    <ClCompile Include="ui\WatchWnd.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
+    <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ui\ChildFrm.h" />
-    <ClInclude Include="ui\ChildView.h" />
     <ClInclude Include="ui\MainFrm.h" />
     <ClInclude Include="ui\PluginApp.h" />
+    <ClInclude Include="ui\PluginAppDoc.h" />
+    <ClInclude Include="ui\PluginAppView.h" />
+    <ClInclude Include="ui\WatchWnd.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon1.ico" />
+    <Image Include="res\icon1.ico" />
     <Image Include="res\MFCApplication1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="Resource.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
