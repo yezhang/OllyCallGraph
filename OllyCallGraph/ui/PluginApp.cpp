@@ -77,8 +77,6 @@ BOOL PluginApp::InitInstance()
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
 
-
-
 	return TRUE;
 }
 
@@ -112,6 +110,7 @@ BOOL PluginApp::OpenWindow()
 	m_hMDIMenu = ::LoadMenu(hInst, MAKEINTRESOURCE(IDR_MFCApplication1TYPE));
 	m_hMDIAccel = ::LoadAccelerators(hInst, MAKEINTRESOURCE(IDR_MFCApplication1TYPE));
 
+	
 
 	// 主窗口已初始化，因此显示它并对其进行更新
 	pFrame->ShowWindow(m_nCmdShow);

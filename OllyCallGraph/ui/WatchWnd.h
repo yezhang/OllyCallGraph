@@ -7,6 +7,8 @@ public:
 	CWatchWnd();
 	virtual ~CWatchWnd();
 
+	void AdjustLayout();	
+
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
@@ -15,5 +17,8 @@ protected:
 
 private:
 	CTreeCtrl m_wndTree;
+	CListCtrl m_wndList;
+
+	void MakeDefaultColumns();
 };
 
