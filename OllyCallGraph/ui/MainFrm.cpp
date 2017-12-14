@@ -18,6 +18,9 @@ IMPLEMENT_DYNAMIC(CMainFrame, CMDIFrameWndEx)
 BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_WM_CREATE()
 	ON_COMMAND(ID_WINDOW_MANAGER, &CMainFrame::OnWindowManager)
+	ON_COMMAND(ID_VIEW_CUSTOMIZE, &CMainFrame::OnViewCustomize)
+	ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &CMainFrame::OnToolbarCreateNew)
+	ON_WM_SETTINGCHANGE()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -53,6 +56,15 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	mdiTabParams.m_bDocumentMenu = TRUE; // 在选项卡区域的右边缘启用文档菜单
 	EnableMDITabbedGroups(TRUE, mdiTabParams);
 
+	//if (!m_wndMenuBar.Create(this))
+	//{
+	//	TRACE0("未能创建菜单栏\n");
+	//	return -1;      // 未能创建
+	//}
+
+	//m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
+
+
 	// 防止菜单栏在激活时获得焦点
 	CMFCPopupMenu::SetForceMenuFocus(FALSE);
 
@@ -78,6 +90,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	
 	m_wndWatch.EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndWatch);
+
+	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2008));
+	// 启用增强的窗口管理对话框
+	EnableWindowsDialog(ID_WINDOW_MANAGER, ID_WINDOW_MANAGER, TRUE);
+
+	ModifyStyle(0, FWS_PREFIXTITLE);
 
 	return 0;
 }
@@ -111,6 +129,12 @@ BOOL CMainFrame::CreateDockingWindows() {
 	return TRUE;
 }
 
+void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
+{
+	
+	UpdateMDITabbedBarsIcons();
+}
+
 // CMainFrame 诊断
 
 #ifdef _DEBUG
@@ -131,4 +155,37 @@ void CMainFrame::Dump(CDumpContext& dc) const
 void CMainFrame::OnWindowManager()
 {
 	ShowWindowsDialog();
+}
+
+void CMainFrame::OnViewCustomize()
+{
+	CMFCToolBarsCustomizeDialog* pDlgCust = new CMFCToolBarsCustomizeDialog(this, TRUE /* 扫描菜单*/);
+	pDlgCust->EnableUserDefinedToolbars();
+	pDlgCust->Create();
+}
+
+LRESULT CMainFrame::OnToolbarCreateNew(WPARAM wp, LPARAM lp)
+{
+	LRESULT lres = CMDIFrameWndEx::OnToolbarCreateNew(wp, lp);
+	if (lres == 0)
+	{
+		return 0;
+	}
+
+	CMFCToolBar* pUserToolbar = (CMFCToolBar*)lres;
+	ASSERT_VALID(pUserToolbar);
+
+	BOOL bNameValid;
+	CString strCustomize;
+	bNameValid = strCustomize.LoadString(IDS_TOOLBAR_CUSTOMIZE);
+	ASSERT(bNameValid);
+
+	pUserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
+	return lres;
+}
+
+void CMainFrame::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
+{
+	CMDIFrameWndEx::OnSettingChange(uFlags, lpszSection);
+	
 }

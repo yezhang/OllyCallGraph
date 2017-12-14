@@ -34,8 +34,5 @@ public:
 
 	// 生成的消息映射函数
 protected:
-	afx_msg void OnFileClose();
-	afx_msg void OnSetFocus(CWnd* pOldWnd);
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	DECLARE_MESSAGE_MAP()
 };

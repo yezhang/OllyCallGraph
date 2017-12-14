@@ -37,15 +37,11 @@ PluginApp::PluginApp()
 
 
 
-
 // CMFCApplication1App 初始化
 
 BOOL PluginApp::InitInstance()
 {
 	CWinApp::InitInstance();
-
-
-	//EnableTaskbarInteraction(FALSE);
 
 	// 使用 RichEdit 控件需要  AfxInitRichEdit2()	
 	// AfxInitRichEdit2();
@@ -81,6 +77,8 @@ BOOL PluginApp::InitInstance()
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
 
+
+
 	return TRUE;
 }
 
@@ -106,6 +104,7 @@ BOOL PluginApp::OpenWindow()
 	// 创建主 MDI 框架窗口
 	if (!pFrame->LoadFrame(IDR_MAINFRAME))
 		return FALSE;
+
 	// 试图加载共享 MDI 菜单和快捷键表
 	//TODO:  添加附加成员变量，并加载对
 	//	应用程序可能需要的附加菜单类型的调用

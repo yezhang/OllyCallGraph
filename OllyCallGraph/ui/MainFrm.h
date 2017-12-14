@@ -30,6 +30,8 @@ public:
 #endif
 
 protected:  // 控件条嵌入成员
+	CMFCMenuBar       m_wndMenuBar;
+	CMFCToolBar       m_wndToolBar;
 	CStatusBar        m_wndStatusBar;
 	CWatchWnd		  m_wndWatch;
 
@@ -38,9 +40,12 @@ protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnWindowManager();
 	afx_msg void OnViewCustomize();
+	afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
+	afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
 	DECLARE_MESSAGE_MAP()
 
 	BOOL CreateDockingWindows();
+	void SetDockingWindowIcons(BOOL bHiColorIcons);
 };
 
 

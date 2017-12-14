@@ -16,7 +16,6 @@
 IMPLEMENT_DYNCREATE(CChildFrame, CMDIChildWndEx)
 
 BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
-	ON_COMMAND(ID_FILE_CLOSE, &CChildFrame::OnFileClose)
 END_MESSAGE_MAP()
 
 // CChildFrame 构造/析构
@@ -41,11 +40,16 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/, CCreateContext* pConte
 BOOL CChildFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO:  在此处通过修改 CREATESTRUCT cs 来修改窗口类或样式
-	if( !CMDIChildWnd::PreCreateWindow(cs) )
+	if (!CMDIChildWndEx::PreCreateWindow(cs))
 		return FALSE;
 
-	cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
-	cs.lpszClass = AfxRegisterWndClass(0);
+	/*cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
+	cs.lpszClass = AfxRegisterWndClass(0);*/
+	return TRUE;
+}
+
+BOOL CChildFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
+{
 	return TRUE;
 }
 
@@ -63,20 +67,3 @@ void CChildFrame::Dump(CDumpContext& dc) const
 }
 #endif //_DEBUG
 
-// CChildFrame 消息处理程序
-void CChildFrame::OnFileClose() 
-{
-	// 若要关闭框架，只需发送 WM_CLOSE，
-	// 这相当于从系统菜单中选择关闭。
-	SendMessage(WM_CLOSE);
-}
-
-
-
-BOOL CChildFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo) 
-{
-	
-	
-	// 否则，执行默认处理
-	return CMDIChildWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
-}
