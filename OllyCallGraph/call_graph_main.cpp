@@ -20,6 +20,11 @@ BOOL DestroyFCTWindow();
 // 唯一的一个 PluginApp 对象
 PluginApp pluginApp;
 
+static HINSTANCE GetGlobalInstance() {
+	AFX_MODULE_STATE* pModuleState = AfxGetModuleState();
+	HINSTANCE hInst = pModuleState->m_hCurrentInstanceHandle;
+	return hInst;
+}
 
 extc int _export cdecl ODBG_Plugindata(char shortname[32]) {
 	strcpy_s(shortname, 32, g_szPluginName);
@@ -32,6 +37,7 @@ extc int _export cdecl ODBG_Plugininit(int ollydbgversion, HWND hw, ulong * feat
 		return -1;
 	}
 
+	hinst = GetGlobalInstance();
 	hwmain = hw;
 
 	Addtolist(0, 0, "FCT Plugin v0.1");
@@ -107,8 +113,12 @@ extc int _export cdecl ODBG_Pluginclose(void) {
 };
 
 
+
 // 窗口插件主窗体
 static HWND CreateFCTWindow(){	
+
+	
+
 	pluginApp.m_nCmdShow = SW_SHOW;
 	pluginApp.OpenWindow();
 

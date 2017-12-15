@@ -15,6 +15,10 @@
 
 IMPLEMENT_DYNAMIC(CMainFrame, CMDIFrameWndEx)
 
+const int  iMaxUserToolbars = 10;
+const UINT uiFirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
+const UINT uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
+
 BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_WM_CREATE()
 	ON_COMMAND(ID_WINDOW_MANAGER, &CMainFrame::OnWindowManager)
@@ -88,6 +92,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	ASSERT(bNameValid);
 	m_wndToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
 
+	// 允许用户定义的工具栏操作: 
+	InitUserToolbars(NULL, uiFirstUserToolBarId, uiLastUserToolBarId);
 
 	if (!m_wndStatusBar.Create(this))
 	{
@@ -96,6 +102,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
 
+	//启用工具栏、菜单栏停靠
 	m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
 	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
@@ -157,6 +164,8 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 		return FALSE;
 	// TODO:  在此处通过修改
 	//  CREATESTRUCT cs 来修改窗口类或样式
+
+	
 
 	return TRUE;
 }

@@ -57,7 +57,7 @@ BOOL PluginApp::InitInstance()
 
 	InitContextMenuManager();
 
-	InitKeyboardManager();
+	//InitKeyboardManager();
 
 	InitTooltipManager();
 	CMFCToolTipInfo ttParams;
@@ -89,6 +89,28 @@ int PluginApp::ExitInstance()
 		FreeResource(m_hMDIAccel);
 
 	return CWinAppEx::ExitInstance();
+}
+
+BOOL PluginApp::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类  
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		UINT iKey = (UINT)pMsg->wParam;
+		switch (iKey)
+		{
+		case VK_F2:
+			
+			break;
+		case VK_F3:
+			
+			break;
+		default:
+			break;
+		}
+	}
+
+	return CWinAppEx::PreTranslateMessage(pMsg);
 }
 
 BOOL PluginApp::OpenWindow()

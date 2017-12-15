@@ -25,6 +25,9 @@ public:
 public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
+	// for translating Windows messages in main message pump
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+
 	BOOL OpenWindow();
 
 // й╣ож
