@@ -47,6 +47,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CMDIFrameWndEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
+	BOOL bNameValid;
 
 	CMDITabInfo mdiTabParams;
 	mdiTabParams.m_style = CMFCTabCtrl::STYLE_3D_ONENOTE; // 其他可用样式...
@@ -56,17 +57,21 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	mdiTabParams.m_bDocumentMenu = TRUE; // 在选项卡区域的右边缘启用文档菜单
 	EnableMDITabbedGroups(TRUE, mdiTabParams);
 
-	//if (!m_wndMenuBar.Create(this))
-	//{
-	//	TRACE0("未能创建菜单栏\n");
-	//	return -1;      // 未能创建
-	//}
+	if (!m_wndMenuBar.Create(this))
+	{
+		TRACE0("未能创建菜单栏\n");
+		return -1;      // 未能创建
+	}
 
-	//m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
+	m_wndMenuBar.SetPaneStyle(m_wndMenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
 
 
 	// 防止菜单栏在激活时获得焦点
 	CMFCPopupMenu::SetForceMenuFocus(FALSE);
+
+	CString strCustomize;
+	bNameValid = strCustomize.LoadString(IDS_TOOLBAR_CUSTOMIZE);
+	ASSERT(bNameValid);
 
 	if (!m_wndStatusBar.Create(this))
 	{
@@ -94,6 +99,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2008));
 	// 启用增强的窗口管理对话框
 	EnableWindowsDialog(ID_WINDOW_MANAGER, ID_WINDOW_MANAGER, TRUE);
+	// 启用工具栏和停靠窗口菜单替换
+	EnablePaneMenu(TRUE, 0, strCustomize, ID_VIEW_TOOLBAR);
+
 
 	ModifyStyle(0, FWS_PREFIXTITLE);
 

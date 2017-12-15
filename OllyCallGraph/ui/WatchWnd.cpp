@@ -51,7 +51,7 @@ int CWatchWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (!m_wndTree.Create(style, dump, this, 1))
 		return -1;
 
-	m_wndList.Create(WS_CHILD | WS_VISIBLE | WS_BORDER | LVS_REPORT, rectClient, this, 1);
+	m_wndList.Create(WS_CHILD | WS_VISIBLE | WS_BORDER | LVS_REPORT | LVS_EX_GRIDLINES, rectClient, this, 1);
 
 	MakeDefaultColumns();
 
