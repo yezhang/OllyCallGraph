@@ -29,7 +29,7 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
 	BOOL OpenWindow();
-
+	
 // й╣ож
 protected:
 	HMENU  m_hMDIMenu;

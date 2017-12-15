@@ -42,6 +42,7 @@ protected:
 	afx_msg void OnViewCustomize();
 	afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
 	afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
+	afx_msg LRESULT OnOllyDBGPausedEx(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 
 	BOOL CreateDockingWindows();

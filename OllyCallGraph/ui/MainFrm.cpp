@@ -24,15 +24,16 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_COMMAND(ID_WINDOW_MANAGER, &CMainFrame::OnWindowManager)
 	ON_COMMAND(ID_VIEW_CUSTOMIZE, &CMainFrame::OnViewCustomize)
 	ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &CMainFrame::OnToolbarCreateNew)
+	ON_MESSAGE(FCT_OD_PAUSEDEX, &CMainFrame::OnOllyDBGPausedEx)
 	ON_WM_SETTINGCHANGE()
 END_MESSAGE_MAP()
+
 
 static UINT indicators[] =
 {
 	ID_SEPARATOR,           // 状态行指示器
 	ID_INDICATOR_CAPS,
 	ID_INDICATOR_NUM,
-	ID_INDICATOR_SCRL,
 };
 
 // CMainFrame 构造/析构
@@ -100,7 +101,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("未能创建状态栏\n");
 		return -1;      // 未能创建
 	}
-	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
+	
+	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT));
 
 	//启用工具栏、菜单栏停靠
 	m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
@@ -164,8 +166,8 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 		return FALSE;
 	// TODO:  在此处通过修改
 	//  CREATESTRUCT cs 来修改窗口类或样式
-
-	
+	cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
+	cs.lpszClass = AfxRegisterWndClass(0);
 
 	return TRUE;
 }
@@ -247,4 +249,18 @@ void CMainFrame::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 {
 	CMDIFrameWndEx::OnSettingChange(uFlags, lpszSection);
 	
+}
+
+LRESULT CMainFrame::OnOllyDBGPausedEx(WPARAM wParam, LPARAM lParam)
+{
+	int reason = wParam;
+	t_reg * reg = (t_reg *)lParam;
+	CString addr;
+
+	addr.Format(_T("%lx"), reg->ip);
+	CString expression("");
+
+	m_wndWatch.AddWatch(addr, expression);
+
+	return 0;
 }

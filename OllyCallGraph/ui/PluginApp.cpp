@@ -18,6 +18,7 @@
 
 
 BEGIN_MESSAGE_MAP(PluginApp, CWinAppEx)
+	
 	ON_COMMAND(ID_APP_ABOUT, &PluginApp::OnAppAbout)
 	// 基于文件的标准文档命令
 	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
@@ -41,7 +42,7 @@ PluginApp::PluginApp()
 
 BOOL PluginApp::InitInstance()
 {
-	CWinApp::InitInstance();
+	CWinAppEx::InitInstance();
 
 	// 使用 RichEdit 控件需要  AfxInitRichEdit2()	
 	// AfxInitRichEdit2();
@@ -57,7 +58,7 @@ BOOL PluginApp::InitInstance()
 
 	InitContextMenuManager();
 
-	//InitKeyboardManager();
+	InitKeyboardManager();
 
 	InitTooltipManager();
 	CMFCToolTipInfo ttParams;
@@ -110,6 +111,10 @@ BOOL PluginApp::PreTranslateMessage(MSG* pMsg)
 		}
 	}
 
+	if (pMsg->message == FCT_OD_PAUSEDEX){
+		return TRUE;
+	}
+
 	return CWinAppEx::PreTranslateMessage(pMsg);
 }
 
@@ -151,6 +156,8 @@ void PluginApp::OnFileNew()
 	pFrame->CreateNewChild(
 		RUNTIME_CLASS(CChildFrame), IDR_MFCApplication1TYPE, m_hMDIMenu, m_hMDIAccel);
 }
+
+
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 

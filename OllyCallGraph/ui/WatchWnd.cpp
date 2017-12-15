@@ -34,6 +34,15 @@ void CWatchWnd::AdjustLayout()
 
 
 
+void CWatchWnd::AddWatch(CString addr, CString expression)
+{
+	//插入数据
+	int index = m_wndList.GetItemCount();
+	
+	m_wndList.InsertItem(index, CT2W(addr));
+	m_wndList.SetItemText(index, 1, CT2W(expression));
+}
+
 int CWatchWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CDockablePane::OnCreate(lpCreateStruct) == -1)
@@ -89,12 +98,7 @@ void CWatchWnd::MakeDefaultColumns()
 	m_wndList.SetColumnWidth(2, 100);
 
 
-	//插入数据
-	int index = m_wndList.GetItemCount();
-	LV_ITEM item;
-	memset(&item, 0, sizeof(LV_ITEM));
 	
-	m_wndList.InsertItem(&item);
 }
 
 //设置表格自动列宽

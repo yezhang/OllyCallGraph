@@ -7,7 +7,12 @@ public:
 	CWatchWnd();
 	virtual ~CWatchWnd();
 
-	void AdjustLayout();	
+	void AdjustLayout();
+
+	/*
+	 * 在CPU指令到达 addr 处时，评估表达式 expression
+	 */
+	void AddWatch(CString addr, CString expression);
 
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

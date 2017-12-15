@@ -81,7 +81,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="call_graph_main.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ui\ChildFrm.cpp" />
     <ClCompile Include="ui\MainFrm.cpp" />
@@ -109,7 +109,6 @@
     <Image Include="res\icon1.ico" />
     <Image Include="res\MFCApplication1.ico" />
     <Image Include="res\Toolbar.bmp" />
-    <Image Include="res\toolbar1.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

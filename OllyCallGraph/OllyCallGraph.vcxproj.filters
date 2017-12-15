@@ -30,9 +30,6 @@
     <ClCompile Include="ui\MainFrm.cpp">
       <Filter>源文件\ui</Filter>
     </ClCompile>
-    <ClCompile Include="call_graph_main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="ui\PluginApp.cpp">
       <Filter>源文件\ui</Filter>
     </ClCompile>
@@ -44,6 +41,9 @@
     </ClCompile>
     <ClCompile Include="ui\PluginAppView.cpp">
       <Filter>源文件\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -88,9 +88,6 @@
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="res\icon1.ico">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\toolbar1.bmp">
       <Filter>资源文件</Filter>
     </Image>
     <Image Include="res\Toolbar.bmp">
