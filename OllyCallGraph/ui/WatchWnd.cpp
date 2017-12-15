@@ -51,7 +51,8 @@ int CWatchWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (!m_wndTree.Create(style, dump, this, 1))
 		return -1;
 
-	m_wndList.Create(WS_CHILD | WS_VISIBLE | WS_BORDER | LVS_REPORT | LVS_EX_GRIDLINES, rectClient, this, 1);
+	//LVS_REPORT
+	m_wndList.Create(WS_CHILD | WS_VISIBLE | WS_BORDER | LVS_EX_GRIDLINES, rectClient, this, 1);
 
 	MakeDefaultColumns();
 
@@ -71,7 +72,7 @@ void CWatchWnd::MakeDefaultColumns()
 {
 	LV_COLUMN colName;
 	colName.pszText = _T("名称");
-	colName.mask = LVCF_TEXT;
+	colName.mask = LVCF_TEXT | LVCF_MINWIDTH;
 	m_wndList.InsertColumn(0, &colName);
 	m_wndList.SetColumnWidth(0, 100);
 
@@ -86,4 +87,20 @@ void CWatchWnd::MakeDefaultColumns()
 	colType.mask = LVCF_TEXT;
 	m_wndList.InsertColumn(2, &colType);
 	m_wndList.SetColumnWidth(2, 100);
+
+
+	//插入数据
+	int index = m_wndList.GetItemCount();
+	LV_ITEM item;
+	memset(&item, 0, sizeof(LV_ITEM));
+	
+	m_wndList.InsertItem(&item);
+}
+
+//设置表格自动列宽
+void CWatchWnd::AutoResizeColumns()
+{
+	int length = m_wndList.GetHeaderCtrl()->GetItemCount();
+	for (int i = 0; i < length; ++i)
+		m_wndList.SetColumnWidth(i, LVSCW_AUTOSIZE_USEHEADER);
 }

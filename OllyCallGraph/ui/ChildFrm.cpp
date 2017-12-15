@@ -50,7 +50,8 @@ BOOL CChildFrame::PreCreateWindow(CREATESTRUCT& cs)
 
 BOOL CChildFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
 {
-	return TRUE;
+
+	return FALSE;
 }
 
 // CChildFrame ’Ô∂œ

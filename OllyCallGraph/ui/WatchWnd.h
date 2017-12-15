@@ -20,5 +20,6 @@ private:
 	CListCtrl m_wndList;
 
 	void MakeDefaultColumns();
+	void AutoResizeColumns();
 };
 
