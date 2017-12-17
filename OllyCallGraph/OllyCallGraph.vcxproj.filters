@@ -74,6 +74,9 @@
     <ClInclude Include="ui\PluginAppView.h">
       <Filter>头文件\ui</Filter>
     </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc">

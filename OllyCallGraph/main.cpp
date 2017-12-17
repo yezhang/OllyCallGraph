@@ -1,11 +1,5 @@
-#define STRICT                         // Avoids some type mismatches
-//#include <windows.h> //MFC中已经包含该头文件
-#include "stdafx.h"
-#include <stdio.h>
-
-#include "resource.h"
-#include "ui/PluginApp.h"
-
+#pragma once
+#include "main.h"
 
 static HINSTANCE hinst;				//Plugin DLL instance
 static HWND      hwmain;            // Handle of main OllyDbg window
@@ -13,8 +7,7 @@ static HWND      hwtrace;             // Handle of function call trace window
 
 static char g_szPluginName[] = "Function Call Trace";
 
-static HWND CreateFCTWindow();
-BOOL DestroyFCTWindow();
+
 
 
 // 唯一的一个 PluginApp 对象
@@ -143,7 +136,6 @@ extc int _export cdecl ODBG_Pluginshortcut(
 
 		Addtolist(0, 0, "Pressed Alt + F1");
 
-		//Createcmdlinewindow();
 		return 1;
 	};                       // Shortcut recognized
 	return 0;                            // Shortcut not recognized
@@ -152,7 +144,7 @@ extc int _export cdecl ODBG_Pluginshortcut(
 // User opens new or restarts current application, clear command line history.
 extc void _export cdecl ODBG_Pluginreset(void) {
 
-	//Addline(NULL);
+	
 };
 
 // OllyDbg calls this optional function when user wants to terminate OllyDbg.
@@ -171,11 +163,83 @@ extc int _export cdecl ODBG_Pluginclose(void) {
 	return 0;
 };
 
+
 extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_EVENT *debugevent){
 	t_result result;
 	char * expr = "[[esp+8]+0xc]";
 
 	t_memory * memory = NULL;
+	ulong ip = reg->ip;
+
+	char cmd[MAXCMDSIZE];
+
+	ulong cmdLen = Readcommand(ip, cmd); //读取指令
+	uchar srcdes[MAXCMDSIZE];
+
+	t_disasm disams;
+	ulong des;
+
+	char disamResult[TEXTLEN];
+
+	if (cmdLen != 0)
+	{
+		cmdLen = Disasm((uchar*)cmd, cmdLen, ip, srcdes, &disams, DISASM_CODE, debugevent->dwThreadId);
+		switch (disams.cmdtype)
+		{
+		case C_JMP:
+			strcpy_s(disamResult, strlen(disams.result)+1, disams.result);
+			if (disams.jmpconst != 0)
+			{
+				//是常量跳转指令
+				des = disams.jmpconst;
+			}
+			else
+			{
+				des = disams.jmpaddr;
+			}
+
+			break;
+		case C_JMC:
+			break;
+		case C_CAL:
+			break;
+		case C_RET:
+			break;
+		}
+		
+	}
+
+	ulong destSize = 0;
+	uchar * calldest = Finddecode(ip, &destSize);
+
+	if (calldest != NULL)
+	{
+		//得到了解析后的数据
+
+	}
+
+	ulong beginIp= Findprocbegin(ip);
+	ulong endIp = Findprocend(ip);
+	char procName[TEXTLEN];
+
+	int procLen;
+
+	//发生了错误
+	if (beginIp == 0)
+	{
+		procLen = Findname(ip, NM_ANYNAME, procName);
+		procLen = Findname(ip, NM_LABEL, procName);
+		procLen = Findname(ip, NM_LIBRARY, procName); //
+		procLen = Findname(ip, NM_EXPORT, procName);
+		procLen = Findname(ip, NM_IMPORT, procName);
+	}
+	else {
+		procLen = Findname(beginIp, NM_ANYNAME, procName);
+	}
+	
+
+
+
 	memory = Findmemory(reg->ip);
 
 	Expression(&result, expr, 0, 0, NULL, memory->base, memory->size, debugevent->dwThreadId);
@@ -185,10 +249,14 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 
 	}
 
-	pluginApp.GetMainWnd()->PostMessageW(FCT_OD_PAUSEDEX, (WPARAM)reason, (LPARAM)reg);
+	NotifyWindow(FCT_OD_PAUSEDEX, (WPARAM)reason, (LPARAM)reg);
 	
 
 	return 0;
+}
+
+static void NotifyWindow(UINT message, WPARAM wParam, LPARAM lParam) {
+	pluginApp.GetMainWnd()->PostMessageW(message, wParam, lParam);
 }
 
 
