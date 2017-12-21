@@ -19,6 +19,12 @@
     <Filter Include="源文件\ui">
       <UniqueIdentifier>{76fe1797-bbb6-446f-9a76-8709130573c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\modal">
+      <UniqueIdentifier>{c685ab01-60f1-4f28-af5e-062062cc63e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\modal">
+      <UniqueIdentifier>{b6740fd3-21ef-46cc-a501-466a9e6c9a4f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -44,6 +50,9 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="modal\InstructionMemo.cpp">
+      <Filter>源文件\modal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="main.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="modal\InstructionMemo.h">
+      <Filter>头文件\modal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

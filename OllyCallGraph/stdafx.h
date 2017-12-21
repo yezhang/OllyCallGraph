@@ -32,7 +32,8 @@
 
 #include <Plugin.h> //包含 OllyDbg v1.10 插件的头文件
 
-
+#include <stack>
+#include <boost/property_tree/ptree.hpp>
 
 
 

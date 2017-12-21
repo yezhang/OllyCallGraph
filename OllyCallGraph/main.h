@@ -5,6 +5,7 @@
 
 #include "resource.h"
 #include "ui/PluginApp.h"
+#include "modal/InstructionMemo.h"
 
 static HWND CreateFCTWindow();
 BOOL DestroyFCTWindow();

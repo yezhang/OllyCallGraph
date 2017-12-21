@@ -7,7 +7,10 @@ static HWND      hwtrace;             // Handle of function call trace window
 
 static char g_szPluginName[] = "Function Call Trace";
 
+#define BUFFER_SIZE	         256
+#define SYSTEM_ADDRESS       0x70000000 //操作系统内核地址空间
 
+volatile BOOL bEnabled = FALSE; //Plugin switch
 
 
 // 唯一的一个 PluginApp 对象
@@ -43,7 +46,7 @@ extc int _export cdecl ODBG_Plugininit(int ollydbgversion, HWND hw, ulong * feat
 }
 // Function adds items to main OllyDbg menu (origin=PM_MAIN).
 extc int _export cdecl ODBG_Pluginmenu(int origin, char data[4096], void *item) {
-	switch (origin) 
+	switch (origin)
 	{
 	case PM_MAIN:
 		strcpy_s(data, 4096, "0 &Open|2 &About");
@@ -54,8 +57,8 @@ extc int _export cdecl ODBG_Pluginmenu(int origin, char data[4096], void *item) 
 	default:
 		return 0;
 	}
-	
-	
+
+
 	return 1;
 };
 
@@ -101,7 +104,7 @@ void handleDisasmMenu(int action, void * item) {
 
 		moduleName = module->name;
 		memory = Findmemory(addr);
-		
+
 		Expression(&result, expr, 0, 0, NULL, dump->base, dump->size, dump->threadid);
 
 		if (result.type == DEC_UNKNOWN)
@@ -116,7 +119,7 @@ void handleDisasmMenu(int action, void * item) {
 
 // Receives commands from main menu.
 extc void _export cdecl ODBG_Pluginaction(int origin, int action, void *item) {
-	
+
 	switch (origin) {
 	case PM_MAIN:
 		handleMainMenu(action, item);
@@ -126,7 +129,7 @@ extc void _export cdecl ODBG_Pluginaction(int origin, int action, void *item) {
 		break;
 	default:break;
 	}
-	
+
 };
 
 // Command line window recognizes global shortcut Alt+F1.
@@ -144,12 +147,12 @@ extc int _export cdecl ODBG_Pluginshortcut(
 // User opens new or restarts current application, clear command line history.
 extc void _export cdecl ODBG_Pluginreset(void) {
 
-	
+
 };
 
 // OllyDbg calls this optional function when user wants to terminate OllyDbg.
 extc int _export cdecl ODBG_Pluginclose(void) {
-	
+
 	// For automatical restoring, mark in .ini file whether command line window
 	// is still open and save coordinates. (WM_CLOSE is not sent in this case).
 	Pluginwriteinttoini(hinst, "Restore command line window", hwtrace != NULL);
@@ -163,17 +166,133 @@ extc int _export cdecl ODBG_Pluginclose(void) {
 	return 0;
 };
 
+void handleCreateProcessEvent(DEBUG_EVENT *debugevent) {
+	CREATE_PROCESS_DEBUG_INFO *pCreateProcessInfo;
+	pCreateProcessInfo = &debugevent->u.CreateProcessInfo;
+
+}
+
+void handleCreateThread(DEBUG_EVENT *debugevent){
+	CREATE_THREAD_DEBUG_INFO createThreadInfo = debugevent->u.CreateThread;
+}
+
+/*
+ * EXCEPTION_RECORD, refs to
+ * https://msdn.microsoft.com/en-us/library/windows/desktop/aa363082(v=vs.85).aspx
+ */
+void handleException(DEBUG_EVENT *debugevent){
+	EXCEPTION_DEBUG_INFO exceptionInfo = debugevent->u.Exception;
+	EXCEPTION_RECORD eRecord = exceptionInfo.ExceptionRecord;
+
+	DWORD eCode = eRecord.ExceptionCode;
+	switch (eCode)
+	{
+	case EXCEPTION_ACCESS_VIOLATION:
+		break;
+	case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:
+		break;
+	case EXCEPTION_BREAKPOINT:
+
+		break;
+
+	case EXCEPTION_SINGLE_STEP:
+		break;
+	case EXCEPTION_STACK_OVERFLOW:
+		break;
+	default:
+		break;
+	}
+
+}
+
+void handleExitProcess(DEBUG_EVENT *debugevent){
+	EXIT_PROCESS_DEBUG_INFO exitProcessInfo = debugevent->u.ExitProcess;
+}
+
+void handleExitThread(DEBUG_EVENT *debugevent){
+	EXIT_THREAD_DEBUG_INFO exitThreadInfo = debugevent->u.ExitThread;
+}
+
+void handleLoadDll(DEBUG_EVENT *debugevent) {
+	LOAD_DLL_DEBUG_INFO loadDllInfo = debugevent->u.LoadDll;
+}
+
+void handleOutputDebugString(DEBUG_EVENT *debugevent){
+	OUTPUT_DEBUG_STRING_INFO debugStringInfo = debugevent->u.DebugString;
+}
+
+void handleRip(DEBUG_EVENT *debugevent){
+	RIP_INFO ripInfo = debugevent->u.RipInfo;
+}
+
+void handleUnLoadDll(DEBUG_EVENT *debugevent) {
+	UNLOAD_DLL_DEBUG_INFO uploadDllInfo = debugevent->u.UnloadDll;
+}
+
+//extc 
+void ODBG_Pluginmainloop(DEBUG_EVENT *debugevent){
+	if (debugevent == NULL)
+	{
+		return;
+	}
+
+
+	switch (debugevent->dwDebugEventCode)
+	{
+	case CREATE_PROCESS_DEBUG_EVENT:
+		handleCreateProcessEvent(debugevent);
+		break;
+	case CREATE_THREAD_DEBUG_EVENT:
+		handleCreateThread(debugevent);
+		break;
+	case EXCEPTION_DEBUG_EVENT:
+		handleException(debugevent);
+		break;
+	case EXIT_PROCESS_DEBUG_EVENT:
+		handleExitProcess(debugevent);
+		break;
+	case EXIT_THREAD_DEBUG_EVENT:
+		handleExitThread(debugevent);
+		break;
+	case LOAD_DLL_DEBUG_EVENT:
+		handleLoadDll(debugevent); //此时应加载符号表
+		break;
+	case OUTPUT_DEBUG_STRING_EVENT:
+		handleOutputDebugString(debugevent);
+		break;
+	case RIP_EVENT:
+		handleRip(debugevent); //当被调试进程在调试器控制之外，意外退出时发生
+		break;
+	case UNLOAD_DLL_DEBUG_EVENT:
+		handleUnLoadDll(debugevent); //此时应卸载符号表
+		break;
+	default:
+		break;
+	}
+}
+
+void FindModules() {
+	t_table * pModules = (t_table*)Plugingetvalue(VAL_MODULES);
+}
+
+void FindBreakPoints() {
+	t_table * pBreakpoints = (t_table*)Plugingetvalue(VAL_BREAKPOINTS);
+}
 
 extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_EVENT *debugevent){
+	int stepMode;
+	DWORD dwReturnAddress, dwSkipAddress;
+	char  cSymbol[BUFFER_SIZE], comment[TEXTLEN];
+
 	t_result result;
 	char * expr = "[[esp+8]+0xc]";
 
 	t_memory * memory = NULL;
 	ulong ip = reg->ip;
 
-	char cmd[MAXCMDSIZE];
+	BYTE cmd[MAXCMDSIZE];
 
-	ulong cmdLen = Readcommand(ip, cmd); //读取指令
+	ulong cmdLen = Readcommand(ip, (PCHAR)cmd); //读取指令
 	uchar srcdes[MAXCMDSIZE];
 
 	t_disasm disams;
@@ -181,33 +300,106 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 
 	char disamResult[TEXTLEN];
 
-	if (cmdLen != 0)
+	if (cmdLen == 0)
 	{
-		cmdLen = Disasm((uchar*)cmd, cmdLen, ip, srcdes, &disams, DISASM_CODE, debugevent->dwThreadId);
-		switch (disams.cmdtype)
-		{
-		case C_JMP:
-			strcpy_s(disamResult, strlen(disams.result)+1, disams.result);
-			if (disams.jmpconst != 0)
-			{
-				//是常量跳转指令
-				des = disams.jmpconst;
-			}
-			else
-			{
-				des = disams.jmpaddr;
-			}
-
-			break;
-		case C_JMC:
-			break;
-		case C_CAL:
-			break;
-		case C_RET:
-			break;
-		}
-		
+		return 0;
 	}
+
+
+	cmdLen = Disasm(cmd, cmdLen, ip, srcdes, &disams, DISASM_ALL, debugevent->dwThreadId);
+	if (cmdLen == 0)
+	{
+		return 0;
+	}
+
+	//默认为单步步入操作
+	stepMode = STEP_IN;
+
+	char callSymbol[BUFFER_SIZE];
+	char callComment[TEXTLEN];
+	char retSymbol[BUFFER_SIZE];
+	char retComment[TEXTLEN];
+
+	int symLen = 0;
+
+	InstLogItem* pItem;
+
+	switch (disams.cmdtype)
+	{
+	case C_JMP:
+		strcpy_s(disamResult, strlen(disams.result) + 1, disams.result);
+		if (disams.jmpconst != 0)
+		{
+			//是常量跳转指令
+			des = disams.jmpconst;
+		}
+		else
+		{
+			des = disams.jmpaddr;
+		}
+
+		memset(callSymbol, 0x00, BUFFER_SIZE);
+		memset(callComment, 0x00, TEXTLEN);
+
+		symLen = Decodeaddress(disams.jmpaddr, 0, ADC_VALID | ADC_JUMP, cSymbol, BUFFER_SIZE, comment);
+
+		if (symLen != 0)
+		{
+			strcpy_s(callSymbol, cSymbol);
+			strcpy_s(callComment, comment);
+		}
+
+		pItem = InstLogItem::Create(disams.ip, callSymbol, callComment);
+
+
+		delete pItem;
+		pItem = NULL;
+
+		break;
+	case C_JMC:
+		break;
+	case C_CAL:
+		
+		memset(callSymbol, 0x00, BUFFER_SIZE);
+		memset(callComment, 0x00, TEXTLEN);
+		memset(retSymbol, 0x00, BUFFER_SIZE);
+		memset(retComment, 0x00, TEXTLEN);
+
+		//处理 call 指令
+		dwReturnAddress = reg->ip + cmdLen;
+		symLen = Decodeaddress(disams.jmpaddr, 0, ADC_VALID | ADC_JUMP, cSymbol, BUFFER_SIZE, comment);
+
+		if (symLen != 0)
+		{
+			strcpy_s(callSymbol, cSymbol);
+			strcpy_s(callComment, comment);
+		}
+		symLen = Decodeaddress(dwReturnAddress, 0, ADC_VALID | ADC_JUMP, cSymbol, BUFFER_SIZE, comment);
+		if (symLen != 0)
+		{
+			strcpy_s(retSymbol, cSymbol);
+			strcpy_s(retComment, comment);
+		}
+
+		pItem = InstLogItem::Create(disams.ip, callSymbol, callComment, retSymbol, retComment);
+
+		CallItem item = {
+			disams.ip,
+			dwReturnAddress
+		};
+		delete pItem;
+		pItem = NULL;
+
+		break;
+	case C_RET:
+		break;
+	case C_REP:
+		break;
+	default:
+		break;
+	}
+
+
 
 	ulong destSize = 0;
 	uchar * calldest = Finddecode(ip, &destSize);
@@ -218,7 +410,7 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 
 	}
 
-	ulong beginIp= Findprocbegin(ip);
+	ulong beginIp = Findprocbegin(ip);
 	ulong endIp = Findprocend(ip);
 	char procName[TEXTLEN];
 
@@ -236,7 +428,7 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 	else {
 		procLen = Findname(beginIp, NM_ANYNAME, procName);
 	}
-	
+
 
 
 
@@ -250,7 +442,7 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 	}
 
 	NotifyWindow(FCT_OD_PAUSEDEX, (WPARAM)reason, (LPARAM)reg);
-	
+
 
 	return 0;
 }
@@ -262,13 +454,13 @@ static void NotifyWindow(UINT message, WPARAM wParam, LPARAM lParam) {
 
 
 // 窗口插件主窗体
-static HWND CreateFCTWindow(){	
+static HWND CreateFCTWindow(){
 
 	pluginApp.m_nCmdShow = SW_SHOW;
 	pluginApp.OpenWindow();
 
 	CWnd* hwnd = pluginApp.GetMainWnd();
-	
+
 	hwtrace = hwnd->GetSafeHwnd();
 
 	return hwtrace;
@@ -277,7 +469,7 @@ static HWND CreateFCTWindow(){
 
 
 BOOL DestroyFCTWindow() {
-	
+
 	return TRUE;
 }
 
