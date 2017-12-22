@@ -92,11 +92,14 @@ void handleDisasmMenu(int action, void * item) {
 	switch (action)
 	{
 	case 0:
+		//标记并设置断点
+
 		if (hwtrace == NULL) {
 			CreateFCTWindow();
 		}
 		dump = (t_dump *)item;
 		addr = dump->addr; //CPU指令地址
+
 		module = Findmodule(addr);
 		if (module == 0){
 			return;
@@ -352,9 +355,7 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 		pItem = InstLogItem::Create(disams.ip, callSymbol, callComment);
 
 
-		delete pItem;
-		pItem = NULL;
-
+		
 		break;
 	case C_JMC:
 		break;
@@ -383,12 +384,12 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 
 		pItem = InstLogItem::Create(disams.ip, callSymbol, callComment, retSymbol, retComment);
 
-		CallItem item = {
+		CallStackItem item = {
 			disams.ip,
 			dwReturnAddress
 		};
-		delete pItem;
-		pItem = NULL;
+
+
 
 		break;
 	case C_RET:

@@ -36,7 +36,7 @@
 #include <boost/property_tree/ptree.hpp>
 
 
-
+#define OD_DELETE(x) {delete x; x = NULL;}
 
 
 

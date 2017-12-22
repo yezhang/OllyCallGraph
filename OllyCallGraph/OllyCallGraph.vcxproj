@@ -82,6 +82,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="modal\InstLogItem.cpp" />
     <ClCompile Include="modal\InstructionMemo.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ui\ChildFrm.cpp" />
@@ -93,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h" />
+    <ClInclude Include="modal\InstLogItem.h" />
     <ClInclude Include="modal\InstructionMemo.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />

@@ -54,6 +54,9 @@
     <ClCompile Include="modal\InstructionMemo.cpp">
       <Filter>源文件\modal</Filter>
     </ClCompile>
+    <ClCompile Include="modal\InstLogItem.cpp">
+      <Filter>源文件\modal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -87,6 +90,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="modal\InstructionMemo.h">
+      <Filter>头文件\modal</Filter>
+    </ClInclude>
+    <ClInclude Include="modal\InstLogItem.h">
       <Filter>头文件\modal</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,7 @@
 #pragma once
 #include "../stdafx.h"
-#define MEMO_DELETE(x) {delete x; x = NULL;}
+#include "./InstLogItem.h"
+
 
 using namespace std;
 
@@ -9,42 +10,38 @@ namespace pt = boost::property_tree;
 typedef struct InstStackItem {
 	DWORD dwCallerIP;
 	DWORD dwReturnAddress; //主函数中，call 指令的下一条指令; 也等于 [esp - 4]
-} CallItem, *pCallItem;
-
-
-class InstLogItem 
-{
-private:
-	CString* pJmpAddr;
-	CString* pCallSymbol;
-	CString* pCallComment;
-	CString* pRetSymbol;
-	CString* pRetComment;
-	InstLogItem();
-	~InstLogItem();
-
-public:
-	static InstLogItem* Create(DWORD dwInstructionAddress, char jmpSymbol[256], char jmpComment[256], char retSymbol[256], char retComment[256]);
-	static InstLogItem* Create(DWORD dwInstructionAddress, char jmpSymbol[256], char jmpComment[256]);
-	static void Destroy(InstLogItem ** pInstLogItem);
-};
+} CallStackItem, *pCallStackItem;
 
 
 // 指令备忘录，用于记录插件的内部数据
-class InstructionMemo
+class InstructionMemo :CObject
 {
 private:
 	pt::ptree functionTreeRoot;
-	stack<CallItem> callStack;
+	stack<CallStackItem> callStack;
 
 public:
 	InstructionMemo();
 	virtual ~InstructionMemo();
 
 private:
-	
-	void InsertInstruction(char * instruction);
-	void Call(CallItem &callItem);
-	void Return();
+	/*
+	 * 在当前函数上下文中，监控指定 CPU 指令地址。
+	 */
+	void WatchAddr(DWORD addr);
+
+	/*
+	 * 暂定到 CALL 指令时，进行记录
+	 */
+	void WillCall(InstLogItem* logItem, CallStackItem &callItem);
+
+	/*
+	 * 暂停到 RET 指令时，进行记录
+	 */
+	void WillReturn(InstLogItem* logItem);
+
+	void DestroyAll();
+
+	DECLARE_SERIAL(InstructionMemo)
 };
 
