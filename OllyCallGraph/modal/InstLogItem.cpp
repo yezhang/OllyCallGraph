@@ -9,6 +9,8 @@ InstLogItem::InstLogItem()
 
 InstLogItem::~InstLogItem()
 {
+	OD_DELETE(this->ip);
+	OD_DELETE(this->pJmpAddr);
 	OD_DELETE(this->pCallSymbol);
 	OD_DELETE(this->pCallComment);
 	OD_DELETE(this->pRetSymbol);
@@ -16,13 +18,19 @@ InstLogItem::~InstLogItem()
 }
 
 
-InstLogItem* InstLogItem::Create(DWORD dwInstructionAddress, char jmpSymbol[256], char jmpComment[256], char retSymbol[256], char retComment[256])
+InstLogItem* InstLogItem::Create(DWORD ip, DWORD jmpAddr, char jmpSymbol[256], char jmpComment[256], char retSymbol[256], char retComment[256])
 {
 	InstLogItem* item = new InstLogItem;
-	ASSERT(dwInstructionAddress > 0);
+	ASSERT(ip > 0);
 
-	item->pJmpAddr = new CString;
-	item->pJmpAddr->Format(_T("0x%.8x"), dwInstructionAddress);
+	item->ip = new CString;
+	item->ip->Format(_T("0x%.8x"), ip);
+
+	if (jmpAddr > 0)
+	{
+		item->pJmpAddr = new CString;
+		item->pJmpAddr->Format(_T("0x%.8x"), jmpAddr);
+	}
 
 	if (jmpSymbol != NULL)
 	{
@@ -44,11 +52,16 @@ InstLogItem* InstLogItem::Create(DWORD dwInstructionAddress, char jmpSymbol[256]
 	return item;
 }
 
-InstLogItem* InstLogItem::Create(DWORD dwInstructionAddress, char jmpSymbol[256], char jmpComment[256])
+InstLogItem* InstLogItem::Create(DWORD ip, DWORD jmpAddr, char jmpSymbol[256], char jmpComment[256])
 {
-	return InstLogItem::Create(dwInstructionAddress, jmpSymbol, jmpComment, NULL, NULL);
+	return InstLogItem::Create(ip, jmpAddr, jmpSymbol, jmpComment, NULL, NULL);
 }
 
+
+InstLogItem* InstLogItem::Create(DWORD ip)
+{
+	return InstLogItem::Create(ip, 0, NULL, NULL);
+}
 
 void InstLogItem::Destroy(InstLogItem**pInstLogItem)
 {

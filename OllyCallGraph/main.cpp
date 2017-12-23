@@ -389,7 +389,7 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 			dwReturnAddress
 		};
 
-
+		
 
 		break;
 	case C_RET:
