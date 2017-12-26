@@ -15,6 +15,8 @@ volatile BOOL bEnabled = FALSE; //Plugin switch
 
 // 唯一的一个 PluginApp 对象
 PluginApp pluginApp;
+// 记录指令日志
+InstructionMemo memo;
 
 static HINSTANCE GetGlobalInstance() {
 	AFX_MODULE_STATE* pModuleState = AfxGetModuleState();
@@ -317,6 +319,7 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 
 	//默认为单步步入操作
 	stepMode = STEP_IN;
+	dwSkipAddress = 0;
 
 	char callSymbol[BUFFER_SIZE];
 	char callComment[TEXTLEN];
@@ -352,7 +355,7 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 			strcpy_s(callComment, comment);
 		}
 
-		pItem = InstLogItem::Create(disams.ip, callSymbol, callComment);
+		pItem = InstLogItem::Create(disams.ip, disams.jmpaddr, callSymbol, callComment);
 
 
 		
@@ -382,54 +385,26 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 			strcpy_s(retComment, comment);
 		}
 
-		pItem = InstLogItem::Create(disams.ip, callSymbol, callComment, retSymbol, retComment);
+		pItem = InstLogItem::Create(disams.ip, disams.jmpaddr, callSymbol,callComment, retSymbol, retComment);
 
 		CallStackItem item = {
 			disams.ip,
 			dwReturnAddress
 		};
 
-		
+		memo.WillCall(pItem, item);
+		pItem = NULL;
 
 		break;
 	case C_RET:
 		break;
 	case C_REP:
+		stepMode = STEP_SKIP;
+		dwSkipAddress = reg->ip + cmdLen;
 		break;
 	default:
 		break;
 	}
-
-
-
-	ulong destSize = 0;
-	uchar * calldest = Finddecode(ip, &destSize);
-
-	if (calldest != NULL)
-	{
-		//得到了解析后的数据
-
-	}
-
-	ulong beginIp = Findprocbegin(ip);
-	ulong endIp = Findprocend(ip);
-	char procName[TEXTLEN];
-
-	int procLen;
-
-	//发生了错误
-	if (beginIp == 0)
-	{
-		procLen = Findname(ip, NM_ANYNAME, procName);
-		procLen = Findname(ip, NM_LABEL, procName);
-		procLen = Findname(ip, NM_LIBRARY, procName); //
-		procLen = Findname(ip, NM_EXPORT, procName);
-		procLen = Findname(ip, NM_IMPORT, procName);
-	}
-	else {
-		procLen = Findname(beginIp, NM_ANYNAME, procName);
-	}
-
 
 
 

@@ -2,9 +2,11 @@
 #include "../stdafx.h"
 #include "./InstLogItem.h"
 
-using namespace std;
+#include "Tree.h"
 
-namespace pt = boost::property_tree;
+using namespace std;
+using namespace od;
+
 
 typedef struct InstStackItem {
 	DWORD dwCallerIP;
@@ -22,14 +24,14 @@ private:
 	 * Key type is std::string, storing an cpu instruction address in memory dump.
 	 * 
 	 */
-	typedef pt::basic_ptree<std::string, InstLogItem*> CallTreeNode;
+	typedef CTree<InstLogItem*> CallTreeNode;
 
 	CallTreeNode m_callTree;
 
 	/**
 	 * 函数调用的全局上下文，当call指令第一次发生时，将指令地址记录到该上下文中。
 	 */
-	CallTreeNode m_globalContext; 
+	CallTreeNode* m_pGlobalContext; 
 
 	/**
 	 * 当前执行指令所在的函数上下文
@@ -68,9 +70,20 @@ public:
 	 *    ├-m_globalContext(data == NULL)
 	 *    |   
 	 */
-	void DestroyAll();
+	void ResetGlobalContext();
+
+
 
 protected:
+	void ClearTree(CallTreeNode & tree);
+
+private:
+	/**
+	 * 将 DWORD 转换为 string 类型。
+	 */
+	std::string CString2String(CString str);
+
+	void addLogItem(InstLogItem* logItem);
 
 };
 

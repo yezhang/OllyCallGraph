@@ -19,13 +19,13 @@ private:
 	InstLogItem();
 	~InstLogItem();
 
-	std::list<string> expressionList; //使用表达式类
+	std::list<std::string> expressionList; //使用表达式类
 
 public:
 	/**
 	 * 给当前地址添加表达式记录
 	 */
-	void AddWatch(string expression);
+	void AddWatch(std::string expression);
 	static InstLogItem* Create(DWORD ip, DWORD jmpAddr, char jmpSymbol[256], char jmpComment[256], char retSymbol[256], char retComment[256]);
 	static InstLogItem* Create(DWORD ip, DWORD jmpAddr, char jmpSymbol[256], char jmpComment[256]);
 	static InstLogItem* Create(DWORD ip);
