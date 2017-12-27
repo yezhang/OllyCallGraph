@@ -385,18 +385,40 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 			strcpy_s(retComment, comment);
 		}
 
-		pItem = InstLogItem::Create(disams.ip, disams.jmpaddr, callSymbol,callComment, retSymbol, retComment);
+		pItem = InstLogItem::Create(disams.ip, disams.jmpaddr, callSymbol, callComment, retSymbol, retComment);
 
-		CallStackItem item = {
-			disams.ip,
-			dwReturnAddress
-		};
-
-		memo.WillCall(pItem, item);
+		{
+			CallStackItem item = {
+				disams.ip,
+				dwReturnAddress
+			};
+			memo.WillCall(pItem, item);
+		}
+		
 		pItem = NULL;
 
 		break;
 	case C_RET:
+		memset(callSymbol, 0x00, BUFFER_SIZE);
+		memset(callComment, 0x00, TEXTLEN);
+		memset(retSymbol, 0x00, BUFFER_SIZE);
+		memset(retComment, 0x00, TEXTLEN);
+
+
+		// 处理 RET 指令
+		symLen = Decodeaddress(disams.jmpaddr, 0, ADC_VALID | ADC_JUMP, cSymbol, BUFFER_SIZE, comment);
+		if (symLen != 0)
+		{
+			strcpy_s(retSymbol, cSymbol);
+			strcpy_s(retComment, comment);
+		}
+
+		pItem = InstLogItem::Create(ip, disams.jmpaddr, retSymbol, retComment);
+
+		memo.WillReturn(pItem);
+
+		pItem = NULL;
+
 		break;
 	case C_REP:
 		stepMode = STEP_SKIP;
@@ -410,21 +432,31 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 
 	memory = Findmemory(reg->ip);
 
-	Expression(&result, expr, 0, 0, NULL, memory->base, memory->size, debugevent->dwThreadId);
+	Expression(&result, expr, 0, 0, NULL, memory->base, memory->size, Getcputhreadid());
 
 	if (result.type == DEC_UNKNOWN)
 	{//表达式出错
 
 	}
 
-	NotifyWindow(FCT_OD_PAUSEDEX, (WPARAM)reason, (LPARAM)reg);
+	NotifyWindow(FCT_OD_PAUSEDEX,(WPARAM)reason, (LPARAM)reg);
 
 
 	return 0;
 }
 
 static void NotifyWindow(UINT message, WPARAM wParam, LPARAM lParam) {
-	pluginApp.GetMainWnd()->PostMessageW(message, wParam, lParam);
+	MSG msg;
+	msg.hwnd = NULL;
+	msg.message = message;
+	msg.wParam = wParam;
+	msg.lParam = lParam;
+	msg.time = ::GetMessageTime();
+	DWORD loc = ::GetMessagePos();
+	msg.pt.x = LOWORD(loc);
+	msg.pt.y = HIWORD(loc);
+
+	pluginApp.PreTranslateMessage(&msg);	
 }
 
 

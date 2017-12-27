@@ -2,6 +2,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/foreach.hpp>
 
+#include "TreeImpl.h"
+
 namespace pt = boost::property_tree;
 
 typedef int(*Fun)(int);
@@ -74,7 +76,8 @@ int main() {
 
 	data.a = data.functor(data.a);
 	
-	
+	od::CTree<Data*> tree;
+
 
 	return 0;
 }

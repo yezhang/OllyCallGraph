@@ -21,6 +21,7 @@ const UINT uiLastUserToolBarId = uiFirstUserToolBarId + iMaxUserToolbars - 1;
 
 BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_WM_CREATE()
+	ON_COMMAND(FCT_OD_PAUSEDEX, &CMainFrame::OnCPUPaused)
 	ON_COMMAND(ID_WINDOW_MANAGER, &CMainFrame::OnWindowManager)
 	ON_COMMAND(ID_VIEW_CUSTOMIZE, &CMainFrame::OnViewCustomize)
 	ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &CMainFrame::OnToolbarCreateNew)
@@ -263,4 +264,9 @@ LRESULT CMainFrame::OnOllyDBGPausedEx(WPARAM wParam, LPARAM lParam)
 	m_wndWatch.AddWatch(addr, expression);
 
 	return 0;
+}
+
+void CMainFrame::OnCPUPaused()
+{
+	int a = 1;
 }

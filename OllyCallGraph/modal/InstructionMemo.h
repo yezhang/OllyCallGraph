@@ -2,7 +2,8 @@
 #include "../stdafx.h"
 #include "./InstLogItem.h"
 
-#include "Tree.h"
+#include "TreeImpl.h"
+#include "ExprMap.h"
 
 using namespace std;
 using namespace od;
@@ -24,7 +25,7 @@ private:
 	 * Key type is std::string, storing an cpu instruction address in memory dump.
 	 * 
 	 */
-	typedef CTree<InstLogItem*> CallTreeNode;
+	typedef od::CTree<InstLogItem*> CallTreeNode;
 
 	CallTreeNode m_callTree;
 
@@ -39,6 +40,8 @@ private:
 	CallTreeNode* m_pCurrentContext;
 
 	stack<CallStackItem> callStack;
+
+	std::unordered_map<DWORD, CExprMap> markers;
 
 public:
 	InstructionMemo();
@@ -62,6 +65,7 @@ public:
 	 */
 	void WillReturn(InstLogItem* logItem);
 
+
 	void DestroyAllWatches(CallTreeNode &elem);
 
 	/**
@@ -84,6 +88,8 @@ private:
 	std::string CString2String(CString str);
 
 	void addLogItem(InstLogItem* logItem);
+
+	void markAddress(DWORD ip);
 
 };
 

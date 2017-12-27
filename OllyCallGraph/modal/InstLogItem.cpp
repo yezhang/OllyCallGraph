@@ -11,11 +11,13 @@ InstLogItem::~InstLogItem()
 {
 	OD_DELETE(this->ip);
 	OD_DELETE(this->pJmpAddr);
-	OD_DELETE(this->pCallSymbol);
-	OD_DELETE(this->pCallComment);
+	OD_DELETE(this->pJmpSymbol);
+	OD_DELETE(this->pJmpComment);
 	OD_DELETE(this->pRetSymbol);
 	OD_DELETE(this->pRetComment);
 }
+
+
 
 
 InstLogItem* InstLogItem::Create(DWORD ip, DWORD jmpAddr, char jmpSymbol[256], char jmpComment[256], char retSymbol[256], char retComment[256])
@@ -23,22 +25,24 @@ InstLogItem* InstLogItem::Create(DWORD ip, DWORD jmpAddr, char jmpSymbol[256], c
 	InstLogItem* item = new InstLogItem;
 	ASSERT(ip > 0);
 
+	item->dwIp = ip;
 	item->ip = new CString;
 	item->ip->Format(_T("0x%.8x"), ip);
 
 	if (jmpAddr > 0)
 	{
+		item->dwJmpAddr = jmpAddr;
 		item->pJmpAddr = new CString;
 		item->pJmpAddr->Format(_T("0x%.8x"), jmpAddr);
 	}
 
 	if (jmpSymbol != NULL)
 	{
-		item->pCallSymbol = new CString(jmpSymbol);
+		item->pJmpSymbol = new CString(jmpSymbol);
 	}
 	if (jmpComment != NULL)
 	{
-		item->pCallComment = new CString(jmpComment);
+		item->pJmpComment = new CString(jmpComment);
 	}
 	if (retSymbol != NULL)
 	{

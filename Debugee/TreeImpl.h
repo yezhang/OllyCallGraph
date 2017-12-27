@@ -2,14 +2,14 @@
 
 namespace od {
 	template<class Data>
-	CTree::CTree()
+	CTree<Data>::CTree()
 	{
 		this->m_pParent = this;
 		this->m_pRoot = this;
 	}
 
 	template<class Data>
-	CTree::~CTree()
+	CTree<Data>::~CTree()
 	{
 		this->m_pParent = NULL;
 		this->m_pRoot = NULL;
@@ -32,33 +32,33 @@ namespace od {
 	}
 
 	template<class Data>
-	self_type& CTree<Data>::root()
+	CTree<Data>& CTree<Data>::root()
 	{
 		return *this->m_pRoot;
 	}
 
 	template<class Data>
-	self_type& CTree<Data>::parent()
+	CTree<Data>& CTree<Data>::parent()
 	{
 		return *this->m_pParent;
 	}
 
 
 	template<class Data>
-	data_type od::CTree<Data>::value()
+	Data od::CTree<Data>::value()
 	{
 		return this->m_data;
 	}
 
 
 	template<class Data>
-	iterator od::CTree<Data>::end()
+	typename CTree<Data>::iterator CTree<Data>::end()
 	{
 		return this->m_children.begin();
 	}
 
 	template<class Data>
-	iterator od::CTree<Data>::begin()
+	typename CTree<Data>::iterator CTree<Data>::begin()
 	{
 		return this->m_children.end();
 	}
@@ -83,7 +83,7 @@ namespace od {
 	}
 
 	template<class Data>
-	self_type& CTree<Data>::removeChild(self_type& child)
+	typename CTree<Data>::self_type& CTree<Data>::removeChild(self_type& child)
 	{
 		std::list<self_type>::iterator itr = std::find(this->m_children.begin(), this->m_children.end(), 1);
 		this->m_children.remove(child);
@@ -91,7 +91,7 @@ namespace od {
 	}
 
 	template<class Data>
-	self_type& CTree<Data>::addChild(self_type& child)
+	typename CTree<Data>::self_type& CTree<Data>::addChild(self_type& child)
 	{
 		this->m_children.push_back(child);
 		return this->m_children.back();

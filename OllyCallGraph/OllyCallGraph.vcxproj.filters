@@ -57,8 +57,11 @@
     <ClCompile Include="modal\InstLogItem.cpp">
       <Filter>源文件\modal</Filter>
     </ClCompile>
-    <ClCompile Include="modal\Tree.cpp">
+    <ClCompile Include="modal\ExprMap.cpp">
       <Filter>源文件\modal</Filter>
+    </ClCompile>
+    <ClCompile Include="modal\TreeImpl.h">
+      <Filter>头文件\modal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -99,6 +102,9 @@
       <Filter>头文件\modal</Filter>
     </ClInclude>
     <ClInclude Include="modal\Tree.h">
+      <Filter>头文件\modal</Filter>
+    </ClInclude>
+    <ClInclude Include="modal\ExprMap.h">
       <Filter>头文件\modal</Filter>
     </ClInclude>
   </ItemGroup>

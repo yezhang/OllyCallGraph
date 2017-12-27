@@ -1,5 +1,9 @@
 #pragma once
-#include "../stdafx.h"
+#include <algorithm>
+#include <vector>
+#include <list>
+
+using namespace std;
 
 namespace od {
 	template<class Data>

@@ -18,7 +18,6 @@
 
 
 BEGIN_MESSAGE_MAP(PluginApp, CWinAppEx)
-	
 	ON_COMMAND(ID_APP_ABOUT, &PluginApp::OnAppAbout)
 	// 基于文件的标准文档命令
 	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
@@ -92,6 +91,7 @@ int PluginApp::ExitInstance()
 	return CWinAppEx::ExitInstance();
 }
 
+//用于和 DLL 通信
 BOOL PluginApp::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类  
