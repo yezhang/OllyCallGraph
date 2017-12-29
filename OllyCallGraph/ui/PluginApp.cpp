@@ -60,6 +60,7 @@ BOOL PluginApp::InitInstance()
 	InitKeyboardManager();
 
 	InitTooltipManager();
+
 	CMFCToolTipInfo ttParams;
 	ttParams.m_bVislManagerTheme = TRUE;
 
@@ -77,6 +78,11 @@ BOOL PluginApp::InitInstance()
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
 
+	//	应用程序可能需要的附加菜单类型的调用
+	HINSTANCE hInst = AfxGetResourceHandle();
+	m_hMDIMenu = ::LoadMenu(hInst, MAKEINTRESOURCE(IDR_MAINFRAME));
+	m_hMDIAccel = ::LoadAccelerators(hInst, MAKEINTRESOURCE(IDR_MAINFRAME));
+	
 	return TRUE;
 }
 
@@ -84,10 +90,15 @@ int PluginApp::ExitInstance()
 {
 	//TODO:  处理可能已添加的附加资源
 	if (m_hMDIMenu != NULL)
+	{
 		FreeResource(m_hMDIMenu);
-	if (m_hMDIAccel != NULL)
-		FreeResource(m_hMDIAccel);
+	}
 
+	if (m_hMDIAccel != NULL)
+	{
+		FreeResource(m_hMDIAccel);
+	}
+	
 	return CWinAppEx::ExitInstance();
 }
 
@@ -95,20 +106,10 @@ int PluginApp::ExitInstance()
 BOOL PluginApp::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类  
-	if (pMsg->message == WM_KEYDOWN)
+	if (m_hMDIAccel != NULL)
 	{
-		UINT iKey = (UINT)pMsg->wParam;
-		switch (iKey)
-		{
-		case VK_F2:
-			
-			break;
-		case VK_F3:
-			
-			break;
-		default:
-			break;
-		}
+		if (::TranslateAccelerator(*m_pMainWnd, m_hMDIAccel, pMsg))
+			return TRUE;
 	}
 
 	if (pMsg->message == FCT_OD_PAUSEDEX){
@@ -132,11 +133,6 @@ BOOL PluginApp::OpenWindow()
 
 	// 试图加载共享 MDI 菜单和快捷键表
 	//TODO:  添加附加成员变量，并加载对
-	//	应用程序可能需要的附加菜单类型的调用
-	HINSTANCE hInst = AfxGetResourceHandle();
-	m_hMDIMenu = ::LoadMenu(hInst, MAKEINTRESOURCE(IDR_MFCApplication1TYPE));
-	m_hMDIAccel = ::LoadAccelerators(hInst, MAKEINTRESOURCE(IDR_MFCApplication1TYPE));
-
 	
 
 	// 主窗口已初始化，因此显示它并对其进行更新

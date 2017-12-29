@@ -26,6 +26,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_COMMAND(ID_VIEW_CUSTOMIZE, &CMainFrame::OnViewCustomize)
 	ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &CMainFrame::OnToolbarCreateNew)
 	ON_MESSAGE(FCT_OD_PAUSEDEX, &CMainFrame::OnOllyDBGPausedEx)
+	ON_MESSAGE(WM_NOTIFY, &CMainFrame::OnHotKey)
 	ON_WM_SETTINGCHANGE()
 END_MESSAGE_MAP()
 
@@ -46,6 +47,57 @@ CMainFrame::CMainFrame()
 
 CMainFrame::~CMainFrame()
 {
+}
+
+LRESULT CMainFrame::DefWindowProc(UINT nMsg, WPARAM wParam, LPARAM lParam)
+{
+	if (nMsg == WM_KEYDOWN)
+	{
+		int a = 2;
+	}
+	return CMDIFrameWndEx::DefWindowProc(nMsg, wParam, lParam);
+}
+
+BOOL CMainFrame::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+	TRACE("OnCommand");
+
+	return CMDIFrameWndEx::OnCommand(wParam, lParam);
+}
+
+LRESULT CMainFrame::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
+{
+	
+	switch (message)
+	{
+	case WM_CREATE:
+		RegisterHotKey(
+			this->GetSafeHwnd(),   // ×¢²á¿ì½Ý¼üµÄ´°¿Ú¾ä±ú
+			1,      // ÈÈ¼ü±êÊ¶·û±ÜÃâÈÈ¼ü³åÍ»
+			MOD_CONTROL | MOD_NOREPEAT, // Ctrl ¼ü  No Repeat ²»ÖØ¸´·¢ËÍ
+			'A'     // A
+			);
+		break;
+	default:
+		break;
+	}
+	if (message == WM_HOTKEY)
+	{
+		TRACE("WindowProc: WM_HOTKEY %d\n", message);
+	}
+	return CMDIFrameWndEx::WindowProc(message, wParam, lParam);
+}
+
+BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
+{
+	TRACE("PreTranslateMessage: msg->message %d", pMsg->message);
+
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		return TRUE;
+	}
+
+	return CMDIFrameWndEx::PreTranslateMessage(pMsg);
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -269,4 +321,20 @@ LRESULT CMainFrame::OnOllyDBGPausedEx(WPARAM wParam, LPARAM lParam)
 void CMainFrame::OnCPUPaused()
 {
 	int a = 1;
+}
+
+LRESULT CMainFrame::OnHotKey(WPARAM wParam, LPARAM lParam)
+{
+	int hotkeyId = (int)wParam;
+	int key = 0;
+	switch (hotkeyId)
+	{
+	case 1:
+		key = 1;
+		break;
+	default:
+		break;
+	}
+
+	return S_OK;
 }

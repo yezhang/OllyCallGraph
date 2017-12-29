@@ -446,6 +446,8 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 }
 
 static void NotifyWindow(UINT message, WPARAM wParam, LPARAM lParam) {
+	AFX_MANAGE_STATE(AfxGetStaticModuleState())
+
 	MSG msg;
 	msg.hwnd = NULL;
 	msg.message = message;

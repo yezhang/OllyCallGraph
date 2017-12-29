@@ -27,12 +27,12 @@ public:
 	virtual int ExitInstance();
 	// for translating Windows messages in main message pump
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-
+	
 	BOOL OpenWindow();
 	
 // й╣ож
 protected:
-	HMENU  m_hMDIMenu;
+	HMENU m_hMDIMenu;
 	HACCEL m_hMDIAccel;
 
 public:

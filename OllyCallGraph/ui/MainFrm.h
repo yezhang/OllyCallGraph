@@ -37,6 +37,14 @@ protected:  // 控件条嵌入成员
 
 // 生成的消息映射函数
 protected:
+	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+
+	virtual LRESULT DefWindowProc(UINT nMsg, WPARAM wParam, LPARAM lParam);
+	
+	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnWindowManager();
 	afx_msg void OnViewCustomize();
@@ -44,6 +52,9 @@ protected:
 	afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
 	afx_msg LRESULT OnOllyDBGPausedEx(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnCPUPaused();
+
+	afx_msg LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);
+
 	DECLARE_MESSAGE_MAP()
 
 	BOOL CreateDockingWindows();
