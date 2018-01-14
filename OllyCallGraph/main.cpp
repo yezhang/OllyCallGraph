@@ -15,14 +15,53 @@ volatile BOOL bEnabled = FALSE; //Plugin switch
 
 // 唯一的一个 PluginApp 对象
 PluginApp pluginApp;
-// 记录指令日志
-InstructionMemo memo;
+
 
 static HINSTANCE GetGlobalInstance() {
 	AFX_MODULE_STATE* pModuleState = AfxGetModuleState();
 	HINSTANCE hInst = pModuleState->m_hCurrentInstanceHandle;
 	return hInst;
 }
+
+
+CDocument* GetMDIActiveDocument()
+{
+	CDocument* pDoc = NULL;
+
+	CWnd* pWndMain = pluginApp.GetMainWnd();
+	ASSERT(pWndMain);
+	ASSERT(pWndMain->IsKindOf(RUNTIME_CLASS(CMDIFrameWnd))); // Not an MDI app.
+
+	// 得到 ChildFrm 
+	CFrameWnd* pFrame = ((CMDIFrameWnd*)pWndMain)->MDIGetActive();
+	if (NULL != pFrame)
+	{
+		pDoc = pFrame->GetActiveDocument(); // get the active document
+	}
+	else{
+
+	}
+	return pDoc;
+}
+
+InstructionMemo* GetActiveMemo() {
+	CDocument * doc = GetMDIActiveDocument();
+
+	// 记录指令日志
+	InstructionMemo* memo = NULL;
+
+	if (NULL != doc)
+	{
+		ASSERT(doc->IsKindOf(RUNTIME_CLASS(CPluginAppDoc)));
+		memo = &((CPluginAppDoc*)doc)->getMemo();
+
+	}
+	ASSERT(NULL != doc);
+	
+	
+	return memo;
+}
+
 
 extc int _export cdecl ODBG_Plugindata(char shortname[32]) {
 	strcpy_s(shortname, 32, g_szPluginName);
@@ -142,11 +181,11 @@ extc int _export cdecl ODBG_Pluginshortcut(
 	int origin, int ctrl, int alt, int shift, int key, void *item) {
 	//if (ctrl == 1 && alt == 1 && shift == 0 && key == 0x54) { //Ctrl + Alt + T
 
-		Addtolist(0, 0, "Pressed Alt + F1");
-		::PostMessage(hwtrace, WM_KEYDOWN, 0x45, MapVirtualKey(0x45, MAPVK_VK_TO_VSC));
+	Addtolist(0, 0, "Pressed Alt + F1");
+	::PostMessage(hwtrace, WM_KEYDOWN, 0x45, MapVirtualKey(0x45, MAPVK_VK_TO_VSC));
 
 
-		return 1;
+	return 1;
 	//};                       // Shortcut recognized
 	return 0;                            // Shortcut not recognized
 };
@@ -287,13 +326,33 @@ void FindBreakPoints() {
 }
 
 void catchCall(InstLogItem* pItem, CallStackItem &item) {
-	memo.WillCall(pItem, item);
+	
+	InstructionMemo* pMemo = GetActiveMemo();
+	pMemo->WillCall(pItem, item);
 }
 
 void catchReturn(InstLogItem* pItem) {
-	memo.WillReturn(pItem);
+	InstructionMemo* pMemo = GetActiveMemo();
+	pMemo->WillReturn(pItem);
 }
+
+void catchJmp(InstLogItem* pItem) {
+
+}
+
+
 extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_EVENT *debugevent){
+	if (hwtrace == NULL)
+	{
+		return 0;
+	}
+	InstructionMemo* pMemo = GetActiveMemo();
+	if (NULL == pMemo)
+	{
+		return 0;
+	}
+
+
 	int stepMode;
 	DWORD dwReturnAddress, dwSkipAddress;
 	char  cSymbol[BUFFER_SIZE], comment[TEXTLEN];
@@ -374,8 +433,9 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 
 		pItem = InstLogItem::Create(CmdType::JMP, disams.ip, disams.jmpaddr, callSymbol, callComment);
 
+		catchJmp(pItem);
 
-		
+
 		break;
 	case C_JMC:
 		break;
@@ -417,7 +477,7 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 			};
 			catchCall(pItem, item);
 		}
-		
+
 		pItem = NULL;
 
 		break;
@@ -462,7 +522,7 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 
 	}
 
-	NotifyWindow(FCT_OD_PAUSEDEX,(WPARAM)reason, (LPARAM)reg);
+	NotifyWindow(FCT_OD_PAUSEDEX, (WPARAM)reason, (LPARAM)reg);
 
 
 	return 0;
@@ -477,7 +537,7 @@ static void SendKeys(uint keyCode) {
 static void NotifyWindow(UINT message, WPARAM wParam, LPARAM lParam) {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
-	MSG msg;
+		MSG msg;
 	msg.hwnd = NULL;
 	msg.message = message;
 	msg.wParam = wParam;
@@ -487,7 +547,7 @@ static void NotifyWindow(UINT message, WPARAM wParam, LPARAM lParam) {
 	msg.pt.x = LOWORD(loc);
 	msg.pt.y = HIWORD(loc);
 
-	pluginApp.PreTranslateMessage(&msg);	
+	pluginApp.PreTranslateMessage(&msg);
 }
 
 

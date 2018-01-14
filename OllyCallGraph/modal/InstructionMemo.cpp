@@ -69,7 +69,6 @@ void InstructionMemo::WillCall(InstLogItem* pItem, CallStackItem &callItem)
 	this->m_pCurrentContext = &this->m_pCurrentContext->addChild(instNode);
 
 	this->callStack.push(callItem); //make a copy of callItem
-	
 }
 
 void InstructionMemo::WillReturn(InstLogItem* pItem)

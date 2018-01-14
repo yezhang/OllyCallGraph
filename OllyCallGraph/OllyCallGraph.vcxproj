@@ -94,6 +94,7 @@
     <ClCompile Include="ui\WatchWnd.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bridge.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="modal\ExprMap.h" />
     <ClInclude Include="modal\InstLogItem.h" />

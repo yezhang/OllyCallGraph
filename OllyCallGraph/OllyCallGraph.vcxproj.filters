@@ -107,6 +107,9 @@
     <ClInclude Include="modal\TreeImpl.h">
       <Filter>头文件\modal</Filter>
     </ClInclude>
+    <ClInclude Include="bridge.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc">

@@ -5,7 +5,9 @@
 
 #include "resource.h"
 
+#include "bridge.h"
 #include "ui/PluginApp.h"
+#include "ui/PluginAppDoc.h"
 #include "modal/InstructionMemo.h"
 
 static HWND CreateFCTWindow();
