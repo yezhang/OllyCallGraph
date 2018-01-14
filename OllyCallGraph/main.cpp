@@ -357,10 +357,10 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 	DWORD dwReturnAddress, dwSkipAddress;
 	char  cSymbol[BUFFER_SIZE], comment[TEXTLEN];
 
-	t_result result;
+	
 	char * expr = "[[esp+8]+0xc]";
 
-	t_memory * memory = NULL;
+	
 	ulong ip = reg->ip;
 
 	BYTE cmd[MAXCMDSIZE];
@@ -512,21 +512,30 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 	}
 
 
-
-	memory = Findmemory(reg->ip);
-
-	Expression(&result, expr, 0, 0, NULL, memory->base, memory->size, Getcputhreadid());
-
-	if (result.type == DEC_UNKNOWN)
-	{//表达式出错
-
-	}
-
 	NotifyWindow(FCT_OD_PAUSEDEX, (WPARAM)reason, (LPARAM)reg);
 
 
 	return 0;
 }
+
+
+
+void Evaluate(char value[256], DWORD ip, char * expression)
+{
+	t_memory * memory = NULL; 
+	memory = Findmemory(ip);
+	t_result result;
+
+	Expression(&result, expression, 0, 0, NULL, memory->base, memory->size, Getcputhreadid());
+
+	if (result.type == DEC_UNKNOWN)
+	{//表达式出错
+		return;
+	}
+	
+	strncpy(value, result.value, 256);
+}
+
 
 static void SendKeys(uint keyCode) {
 	uint scan = MapVirtualKey(keyCode, 0);
