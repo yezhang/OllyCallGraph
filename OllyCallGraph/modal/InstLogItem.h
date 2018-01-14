@@ -3,6 +3,13 @@
 
 class InstructionMemo;
 
+enum CmdType{
+	UN_KNOWN,
+	CALL, //Call 指令
+	RET,  //Retn 指令
+	JMP   //Jmp  指令
+};
+
 class InstLogItem : CObject
 {
 	DECLARE_SERIAL(InstLogItem)
@@ -10,12 +17,15 @@ class InstLogItem : CObject
 	friend class InstructionMemo;
 
 private:
+	CmdType	 cmdType; //
 	CString* ip; //address of instruction in cpu.
+	CString* pJmpSymbol;
+	CString* pJmpComment;
+
 	DWORD	 dwIp; //same as ip.
 	CString* pJmpAddr; //jump target address
 	DWORD	 dwJmpAddr; //same as pJmpAddr.
-	CString* pJmpSymbol;
-	CString* pJmpComment;
+	
 	CString* pRetSymbol;
 	CString* pRetComment;
 	InstLogItem();
@@ -39,7 +49,7 @@ public:
 	// Parameter: char retSymbol[256]
 	// Parameter: char retComment[256]
 	//************************************
-	static InstLogItem* Create(DWORD ip, DWORD jmpAddr, char jmpSymbol[256], char jmpComment[256], char retSymbol[256], char retComment[256]);
+	static InstLogItem* Create(CmdType cmdType, DWORD ip, DWORD jmpAddr, char jmpSymbol[256], char jmpComment[256], char retSymbol[256], char retComment[256]);
 	
 	//************************************
 	// Method:    Create，创建 RET 指令时调用
@@ -52,7 +62,7 @@ public:
 	// Parameter: char jmpSymbol[256]
 	// Parameter: char jmpComment[256]
 	//************************************
-	static InstLogItem* Create(DWORD ip, DWORD jmpAddr, char jmpSymbol[256], char jmpComment[256]);
+	static InstLogItem* Create(CmdType cmdType, DWORD ip, DWORD jmpAddr, char jmpSymbol[256], char jmpComment[256]);
 
 
 	//************************************

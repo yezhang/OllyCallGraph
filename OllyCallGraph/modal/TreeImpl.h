@@ -1,8 +1,12 @@
+#pragma once
+#include <algorithm>
+#include <vector>
+
 #include "Tree.h"
 
 namespace od {
 	template<class Data>
-	CTree<Data>::CTree()
+	CTree<Data>::CTree() :m_data(data_type())
 	{
 		this->m_pParent = this;
 		this->m_pRoot = this;
@@ -19,10 +23,26 @@ namespace od {
 
 
 	template<class Data>
-	bool CTree<Data>::operator==(const self_type& rhs) const
+	bool od::CTree<Data>::operator==(const od::CTree<Data>& rhs) const
 	{
+		if (this->m_pRoot != rhs.m_pRoot)
+		{
+			return false;
+		}
+		if (this->m_pParent != rhs.m_pParent)
+		{
+			return false;
+		}
 		return this->m_data == rhs.m_data;
 	}
+
+
+	template<class Data>
+	bool od::CTree<Data>::operator!=(const od::CTree<Data>& rhs) const
+	{
+		return !(this == rhs);
+	}
+
 
 	template<class Data>
 	void CTree<Data>::clear()
@@ -83,16 +103,25 @@ namespace od {
 	}
 
 	template<class Data>
-	typename CTree<Data>::self_type& CTree<Data>::removeChild(self_type& child)
+	void CTree<Data>::removeChild(self_type& child)
 	{
-		std::list<self_type>::iterator itr = std::find(this->m_children.begin(), this->m_children.end(), 1);
-		this->m_children.remove(child);
-		return *itr;
+		std::list<self_type>::iterator itr = std::find(this->m_children.begin(), this->m_children.end(), child);
+		if (itr == this->m_children.end())
+		{
+			return;
+		}
+
+		itr->m_pParent = &(*itr);
+		itr->m_pRoot = itr->m_pParent;
+		
+		this->m_children.remove(*itr);
 	}
 
 	template<class Data>
 	typename CTree<Data>::self_type& CTree<Data>::addChild(self_type& child)
 	{
+		child.m_pParent = this;
+		child.m_pRoot = this->m_pRoot;
 		this->m_children.push_back(child);
 		return this->m_children.back();
 	}

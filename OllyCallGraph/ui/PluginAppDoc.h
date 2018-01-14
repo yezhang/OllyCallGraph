@@ -1,13 +1,18 @@
 #pragma once
 #include "../stdafx.h"
+#include "../modal/InstructionMemo.h"
 
 class CPluginAppDoc : public CDocument
 {
 protected:
 	CPluginAppDoc();
 	DECLARE_DYNCREATE(CPluginAppDoc)
+// Ьиад
+private:
+	InstructionMemo memo;
 
 public:
+	InstructionMemo& getMemo();
 	virtual BOOL OnNewDocument();
 	virtual void Serialize(CArchive& ar);
 #ifdef SHARED_HANDLERS

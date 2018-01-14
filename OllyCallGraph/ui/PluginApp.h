@@ -27,6 +27,7 @@ public:
 	virtual int ExitInstance();
 	// for translating Windows messages in main message pump
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual BOOL ProcessMessageFilter(int code, LPMSG lpMsg);
 	
 	BOOL OpenWindow();
 	

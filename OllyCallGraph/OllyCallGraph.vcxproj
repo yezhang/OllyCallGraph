@@ -85,7 +85,6 @@
     <ClCompile Include="modal\ExprMap.cpp" />
     <ClCompile Include="modal\InstLogItem.cpp" />
     <ClCompile Include="modal\InstructionMemo.cpp" />
-    <ClCompile Include="modal\TreeImpl.h" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ui\ChildFrm.cpp" />
     <ClCompile Include="ui\MainFrm.cpp" />
@@ -100,6 +99,7 @@
     <ClInclude Include="modal\InstLogItem.h" />
     <ClInclude Include="modal\InstructionMemo.h" />
     <ClInclude Include="modal\Tree.h" />
+    <ClInclude Include="modal\TreeImpl.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -118,6 +118,9 @@
     <Image Include="res\icon1.ico" />
     <Image Include="res\MFCApplication1.ico" />
     <Image Include="res\Toolbar.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

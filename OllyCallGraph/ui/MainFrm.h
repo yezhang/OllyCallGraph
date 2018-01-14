@@ -39,10 +39,6 @@ protected:  // 控件条嵌入成员
 protected:
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-
-	virtual LRESULT DefWindowProc(UINT nMsg, WPARAM wParam, LPARAM lParam);
-	
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -53,7 +49,7 @@ protected:
 	afx_msg LRESULT OnOllyDBGPausedEx(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnCPUPaused();
 
-	afx_msg LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);
+	
 
 	DECLARE_MESSAGE_MAP()
 

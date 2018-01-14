@@ -2,6 +2,11 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/foreach.hpp>
 
+// uncomment to disable assert()
+// #define NDEBUG
+#include <cassert>
+#include<string>
+
 #include "TreeImpl.h"
 
 namespace pt = boost::property_tree;
@@ -66,18 +71,33 @@ void ReadJSON() {
 	subval = key2Obj.get<int>("subkey");
 }
 
+typedef od::CTree<std::string> Node;
+
 int main() {
-	data.a = 5;
-	data.functor = globalFun;
-
-	//MakeTree();
-
-	ReadJSON();
-
-	data.a = data.functor(data.a);
 	
-	od::CTree<Data*> tree;
 
+	Node tree;
+	tree.putValue("ROOT");
+
+	Node child;
+	child.putValue("child");
+
+
+
+	Node* p_child = &tree.addChild(child);
+
+	Node childchild;
+	childchild.putValue("childchild");
+
+	p_child->addChild(childchild);
+
+	assert(&tree == (&child.parent()));
+	assert(&tree == &child.root());
+	assert(&tree == &p_child->root());
+	assert(p_child == &childchild.parent());
+	assert(&tree == &childchild.root());
+
+	p_child->removeChild(childchild);
 
 	return 0;
 }

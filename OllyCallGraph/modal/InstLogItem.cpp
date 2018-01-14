@@ -20,11 +20,12 @@ InstLogItem::~InstLogItem()
 
 
 
-InstLogItem* InstLogItem::Create(DWORD ip, DWORD jmpAddr, char jmpSymbol[256], char jmpComment[256], char retSymbol[256], char retComment[256])
+InstLogItem* InstLogItem::Create(CmdType cmdType, DWORD ip, DWORD jmpAddr, char jmpSymbol[256], char jmpComment[256], char retSymbol[256], char retComment[256])
 {
 	InstLogItem* item = new InstLogItem;
 	ASSERT(ip > 0);
 
+	item->cmdType = cmdType;
 	item->dwIp = ip;
 	item->ip = new CString;
 	item->ip->Format(_T("0x%.8x"), ip);
@@ -56,15 +57,15 @@ InstLogItem* InstLogItem::Create(DWORD ip, DWORD jmpAddr, char jmpSymbol[256], c
 	return item;
 }
 
-InstLogItem* InstLogItem::Create(DWORD ip, DWORD jmpAddr, char jmpSymbol[256], char jmpComment[256])
+InstLogItem* InstLogItem::Create(CmdType cmdType, DWORD ip, DWORD jmpAddr, char jmpSymbol[256], char jmpComment[256])
 {
-	return InstLogItem::Create(ip, jmpAddr, jmpSymbol, jmpComment, NULL, NULL);
+	return InstLogItem::Create(cmdType, ip, jmpAddr, jmpSymbol, jmpComment, NULL, NULL);
 }
 
 
 InstLogItem* InstLogItem::Create(DWORD ip)
 {
-	return InstLogItem::Create(ip, 0, NULL, NULL);
+	return InstLogItem::Create(UN_KNOWN, ip, 0, NULL, NULL);
 }
 
 void InstLogItem::Destroy(InstLogItem**pInstLogItem)

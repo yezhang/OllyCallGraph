@@ -106,17 +106,24 @@ int PluginApp::ExitInstance()
 BOOL PluginApp::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 在此添加专用代码和/或调用基类  
-	if (m_hMDIAccel != NULL)
-	{
-		if (::TranslateAccelerator(*m_pMainWnd, m_hMDIAccel, pMsg))
-			return TRUE;
-	}
+	
 
 	if (pMsg->message == FCT_OD_PAUSEDEX){
 		return TRUE;
 	}
 
 	return CWinAppEx::PreTranslateMessage(pMsg);
+}
+
+BOOL PluginApp::ProcessMessageFilter(int code, LPMSG lpMsg)
+{
+	if (m_hMDIAccel != NULL)
+	{
+		if (::TranslateAccelerator(*m_pMainWnd, m_hMDIAccel, lpMsg))
+			return TRUE;
+	}
+
+	return CWinAppEx::ProcessMessageFilter(code, lpMsg);
 }
 
 BOOL PluginApp::OpenWindow()

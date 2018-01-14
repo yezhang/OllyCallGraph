@@ -140,12 +140,14 @@ extc void _export cdecl ODBG_Pluginaction(int origin, int action, void *item) {
 // Command line window recognizes global shortcut Alt+F1.
 extc int _export cdecl ODBG_Pluginshortcut(
 	int origin, int ctrl, int alt, int shift, int key, void *item) {
-	if (ctrl == 0 && alt == 1 && shift == 0 && key == VK_F1) {
+	//if (ctrl == 1 && alt == 1 && shift == 0 && key == 0x54) { //Ctrl + Alt + T
 
 		Addtolist(0, 0, "Pressed Alt + F1");
+		::PostMessage(hwtrace, WM_KEYDOWN, 0x45, MapVirtualKey(0x45, MAPVK_VK_TO_VSC));
+
 
 		return 1;
-	};                       // Shortcut recognized
+	//};                       // Shortcut recognized
 	return 0;                            // Shortcut not recognized
 };
 
@@ -284,6 +286,13 @@ void FindBreakPoints() {
 	t_table * pBreakpoints = (t_table*)Plugingetvalue(VAL_BREAKPOINTS);
 }
 
+void catchCall(InstLogItem* pItem, CallStackItem &item) {
+	memo.WillCall(pItem, item);
+}
+
+void catchReturn(InstLogItem* pItem) {
+	memo.WillReturn(pItem);
+}
 extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_EVENT *debugevent){
 	int stepMode;
 	DWORD dwReturnAddress, dwSkipAddress;
@@ -310,6 +319,12 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 		return 0;
 	}
 
+	//ulong begin = Findprocbegin(ip);
+
+	//if (begin != 0)
+	//{
+	//	//找到了正确地址
+	//}
 
 	cmdLen = Disasm(cmd, cmdLen, ip, srcdes, &disams, DISASM_ALL, debugevent->dwThreadId);
 	if (cmdLen == 0)
@@ -329,6 +344,8 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 	int symLen = 0;
 
 	InstLogItem* pItem;
+	t_module* module;
+	char * moduleName;
 
 	switch (disams.cmdtype)
 	{
@@ -355,7 +372,7 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 			strcpy_s(callComment, comment);
 		}
 
-		pItem = InstLogItem::Create(disams.ip, disams.jmpaddr, callSymbol, callComment);
+		pItem = InstLogItem::Create(CmdType::JMP, disams.ip, disams.jmpaddr, callSymbol, callComment);
 
 
 		
@@ -363,7 +380,6 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 	case C_JMC:
 		break;
 	case C_CAL:
-		
 		memset(callSymbol, 0x00, BUFFER_SIZE);
 		memset(callComment, 0x00, TEXTLEN);
 		memset(retSymbol, 0x00, BUFFER_SIZE);
@@ -371,6 +387,13 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 
 		//处理 call 指令
 		dwReturnAddress = reg->ip + cmdLen;
+
+		module = Findmodule(disams.jmpaddr);
+		if (module != NULL)
+		{
+			moduleName = module->name; //目标地址所在的模块
+		}
+
 		symLen = Decodeaddress(disams.jmpaddr, 0, ADC_VALID | ADC_JUMP, cSymbol, BUFFER_SIZE, comment);
 
 		if (symLen != 0)
@@ -385,14 +408,14 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 			strcpy_s(retComment, comment);
 		}
 
-		pItem = InstLogItem::Create(disams.ip, disams.jmpaddr, callSymbol, callComment, retSymbol, retComment);
+		pItem = InstLogItem::Create(CmdType::CALL, disams.ip, disams.jmpaddr, callSymbol, callComment, retSymbol, retComment);
 
 		{
 			CallStackItem item = {
 				disams.ip,
 				dwReturnAddress
 			};
-			memo.WillCall(pItem, item);
+			catchCall(pItem, item);
 		}
 		
 		pItem = NULL;
@@ -413,9 +436,9 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 			strcpy_s(retComment, comment);
 		}
 
-		pItem = InstLogItem::Create(ip, disams.jmpaddr, retSymbol, retComment);
+		pItem = InstLogItem::Create(CmdType::RET, ip, disams.jmpaddr, retSymbol, retComment);
 
-		memo.WillReturn(pItem);
+		catchReturn(pItem);
 
 		pItem = NULL;
 
@@ -445,6 +468,12 @@ extc int _export cdecl ODBG_Pausedex(int reason, int extdata, t_reg *reg, DEBUG_
 	return 0;
 }
 
+static void SendKeys(uint keyCode) {
+	uint scan = MapVirtualKey(keyCode, 0);
+	uint lParam;
+
+
+}
 static void NotifyWindow(UINT message, WPARAM wParam, LPARAM lParam) {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 

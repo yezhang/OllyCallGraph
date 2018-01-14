@@ -1,9 +1,5 @@
 #pragma once
-#include <algorithm>
-#include <vector>
 #include <list>
-
-using namespace std;
 
 namespace od {
 	template<class Data>
@@ -21,7 +17,7 @@ namespace od {
 		virtual ~CTree();
 
 		self_type& addChild(self_type& child);
-		self_type& removeChild(self_type& child);
+		void removeChild(self_type& child);
 		void putValue(Data data);
 
 		bool isEmpty();
@@ -42,6 +38,8 @@ namespace od {
 		// Parameter: const self_type & rhs
 		//************************************
 		bool operator==(const self_type& rhs) const;
+
+		bool operator!=(const self_type& rhs) const;
 
 	private:
 		self_type* m_pRoot;

@@ -30,6 +30,11 @@ CPluginAppDoc::~CPluginAppDoc()
 }
 
 
+InstructionMemo& CPluginAppDoc::getMemo()
+{
+	return this->memo;
+}
+
 BOOL CPluginAppDoc::OnNewDocument()
 {
 	if (!CDocument::OnNewDocument())
