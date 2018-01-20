@@ -5,7 +5,7 @@
 #pragma once
 
 
-class CPluginAppView : public CView
+class CPluginAppView : public CTreeView
 {
 protected: // 仅从序列化创建
 	CPluginAppView();
@@ -19,23 +19,31 @@ public:
 public:
 
 // 重写
-public:
+public:	
 	virtual void OnDraw(CDC* pDC);  // 重写以绘制该视图
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual void OnInitialUpdate(); // called first time after construct
+
 protected:
+	
 
 // 实现
 public:
 	virtual ~CPluginAppView();
+
+
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
 protected:
+	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
 
 // 生成的消息映射函数
 protected:
+	afx_msg int OnCreate(LPCREATESTRUCT lpcs);
+	afx_msg void OnSelchanged(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);

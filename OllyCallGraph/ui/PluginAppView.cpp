@@ -19,9 +19,10 @@
 
 // CMFCApplication1View
 
-IMPLEMENT_DYNCREATE(CPluginAppView, CView)
+IMPLEMENT_DYNCREATE(CPluginAppView, CTreeView)
 
-BEGIN_MESSAGE_MAP(CPluginAppView, CView)
+BEGIN_MESSAGE_MAP(CPluginAppView, CTreeView)
+	ON_WM_CREATE()
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
 END_MESSAGE_MAP()
@@ -43,7 +44,13 @@ BOOL CPluginAppView::PreCreateWindow(CREATESTRUCT& cs)
 	// TODO:  在此处通过修改
 	//  CREATESTRUCT cs 来修改窗口类或样式
 
-	return CView::PreCreateWindow(cs);
+	return CTreeView::PreCreateWindow(cs);
+}
+
+
+void CPluginAppView::OnInitialUpdate()
+{
+
 }
 
 // CMFCApplication1View 绘制
@@ -56,6 +63,13 @@ void CPluginAppView::OnDraw(CDC* /*pDC*/)
 		return;
 
 	// TODO:  在此处为本机数据添加绘制代码
+}
+
+// 成功返回0，失败返回 -1
+int CPluginAppView::OnCreate(LPCREATESTRUCT lpcs)
+{
+	int result =  CTreeView::OnCreate(lpcs);
+	return result;
 }
 
 void CPluginAppView::OnRButtonUp(UINT /* nFlags */, CPoint point)
@@ -72,17 +86,19 @@ void CPluginAppView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 }
 
 
+
+
 // CMFCApplication1View 诊断
 
 #ifdef _DEBUG
 void CPluginAppView::AssertValid() const
 {
-	CView::AssertValid();
+	CTreeView::AssertValid();
 }
 
 void CPluginAppView::Dump(CDumpContext& dc) const
 {
-	CView::Dump(dc);
+	CTreeView::Dump(dc);
 }
 
 CPluginAppDoc* CPluginAppView::GetDocument() const // 非调试版本是内联的
@@ -90,6 +106,12 @@ CPluginAppDoc* CPluginAppView::GetDocument() const // 非调试版本是内联的
 	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CPluginAppDoc)));
 	return (CPluginAppDoc*)m_pDocument;
 }
+
+void CPluginAppView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
+{
+
+}
+
 #endif //_DEBUG
 
 

@@ -74,13 +74,13 @@ namespace od {
 	template<class Data>
 	typename CTree<Data>::iterator CTree<Data>::end()
 	{
-		return this->m_children.begin();
+		return this->m_children.end();
 	}
 
 	template<class Data>
 	typename CTree<Data>::iterator CTree<Data>::begin()
 	{
-		return this->m_children.end();
+		return this->m_children.begin();
 	}
 
 

@@ -118,24 +118,20 @@ std::string InstructionMemo::CString2String(CString str)
 
 void InstructionMemo::DestroyAllWatches(CallTreeNode &elem)
 {	
+	if (!elem.isEmpty())
+	{
+		//遍历孩子
+		for (CallTreeNode::iterator v = elem.begin(); v != elem.end(); ++v) {
+			//InstLogItem* data = v->second.get_value<InstLogItem*>();
+			CallTreeNode & subtree = *v;
+			DestroyAllWatches(subtree);
+		}
+	}
 
 	//释放自己的数据
 	InstLogItem* data = elem.value();
 	if (data != NULL){
 		InstLogItem::Destroy(&data);
-	}
-
-	if (elem.isEmpty())
-	{
-		return;
-	}
-
-	//遍历孩子
-
-	for (CallTreeNode::iterator v = elem.begin(); v != elem.end(); ++v) {
-		//InstLogItem* data = v->second.get_value<InstLogItem*>();
-		CallTreeNode & subtree = *v;
-		DestroyAllWatches(subtree);
 	}
 
 }
