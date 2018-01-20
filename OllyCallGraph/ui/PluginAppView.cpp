@@ -50,7 +50,10 @@ BOOL CPluginAppView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CPluginAppView::OnInitialUpdate()
 {
+	CTreeCtrl& tree = GetTreeCtrl();
 
+	HTREEITEM hItem, hSubItem;
+	hItem = tree.InsertItem(_T("Global"), TVI_ROOT); //在根结点上添加Parent1
 }
 
 // CMFCApplication1View 绘制
